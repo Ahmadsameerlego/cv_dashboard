@@ -1,0 +1,17 @@
+{
+    "site":{
+        "login" : "Login",
+        "register" : "Register",
+        "pagesDesc" : "The CV Broadcast application has many features, and we present some of the features of the application",
+        "appPages" : "Application Pages",
+        "Awamer" : "Designed and programmed by the Awamer El-Shabaka Corporation",
+        "cvCopy" : "All rights reserved to CV",
+        "downloads" : "Downloads",
+        "companiesNumbers" : "Companies Number",
+        "userNumbers" : "Users Number",
+        "clientNumbers" :"Client Numbers",
+        "statDesc" : "We show you here the statistics for the application",
+        "statistics" : "Application Statistics",
+        "vision" : "Our Vision"
+    }
+}

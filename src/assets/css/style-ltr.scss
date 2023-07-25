@@ -1,0 +1,17 @@
+body.ltr{
+    direction: ltr;
+    text-align: left;
+    .swiper-slide.swiper-slide-active {
+        // margin-right: 40px !important;
+        margin-left: 0px !important;
+    }
+    .swiper-slide-prev{
+        // margin-right: 40px !important;
+        margin-left: 0px !important;
+    }
+    .centered_image{
+        // left: calc(50%  + 20px);
+        right: auto;
+        transform: translate(50%, 15%);
+    }    
+}
