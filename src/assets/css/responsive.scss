@@ -1,0 +1,14 @@
+@media(max-width:768px){
+    #header{
+        width: calc(100%) !important;
+        height: fit-content !important;
+        .header_content{
+            flex-direction: column;
+            justify-content: center;
+        }
+    }
+    .content {
+        width: calc(100%);
+        margin-right: 0px;
+    }
+}

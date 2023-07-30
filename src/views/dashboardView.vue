@@ -23,7 +23,7 @@ export default {
 }
 </script>
 
-<style >
+<style lang="scss">
     .content{
         width: calc(100% - 300px);
         height: calc(100% - 150px);
@@ -32,5 +32,13 @@ export default {
         left: 0;
         top: 100px;
         margin-right: 300px;
+    }
+    body.ltr{
+      .content{
+        left:auto;
+        right:0;
+        margin-right: 0;
+        margin-left: 300px;
+      }
     }
 </style>

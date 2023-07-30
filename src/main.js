@@ -70,6 +70,9 @@ import './assets/css/style.scss';
 // main style 
 import './assets/css/style-ltr.scss';
 
+// responsive style 
+import '@/assets/css/responsive.scss'
+
 createApp(App)
 .use(store)
 .use(router)

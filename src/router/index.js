@@ -7,7 +7,13 @@ import search from '@/views/searchView.vue';
 import profile from '@/views/employeeProfile.vue';
 import chat from '@/views/chatRooms.vue';
 import addJob from '@/views/addJobAds.vue';
-import messages from '@/views/messagesView.vue'
+import messages from '@/views/messagesView.vue';
+import orders from '@/views/jobOrders.vue';
+import details from '@/views/orderDetails.vue';
+import settings from '@/views/jobSettings.vue';
+import ownDetails from '@/views/ownOrdersDetails.vue';
+import editJob from '@/views/editJobPost.vue';
+import contactUs from '@/views/contactUs.vue'
 const routes = [
   {
     path: '/',
@@ -53,6 +59,36 @@ const routes = [
     path : '/messages',
     name : 'messages',
     component : messages
+  },
+  {
+    path : '/orders',
+    name : 'orders',
+    component : orders
+  },
+  {
+    path : '/details/:id',
+    name : 'details',
+    component : details
+  },
+  {
+    path : '/settings',
+    name : 'settings',
+    component : settings
+  },
+  {
+    path : '/ownDetails/:id',
+    name : 'ownDetails',
+    component : ownDetails
+  },
+  {
+    path : '/editJob',
+    name : 'editJob',
+    component : editJob
+  },
+  {
+    path : '/contactUs',
+    name : 'contactUs',
+    component : contactUs
   }
 ]
 

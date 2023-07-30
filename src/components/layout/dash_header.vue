@@ -1,6 +1,6 @@
 <template>
     <section id="header" class="px-5 pt-3 pb-3">
-        <div class="d-flex justify-content-between align-items-center">
+        <div class="header_content d-flex justify-content-between align-items-center">
             <!-- right hand  -->
             <div>
                 <h5 class="fw-bold mainColor">
@@ -87,7 +87,7 @@ export default {
         left: 0;
         height: 110px;
         background-color: #fff;
-        z-index: 9;
+        z-index: 11;
         .laughImoji{
             width: 35px;
             height: 35px;

@@ -183,6 +183,13 @@ export default {
     z-index: 9;
   }
  
+
+</style>
+
+<style lang="scss">
+   .form-select{
+        background-position: left 0.75rem center;
+  }
   .matches_cards{
     .best_match{
       border-radius: 8px;
@@ -199,11 +206,5 @@ export default {
         color:#86888A !important;
       }
     }
-  }
-</style>
-
-<style>
-   .form-select{
-        background-position: left 0.75rem center;
   }
 </style>

@@ -13,5 +13,9 @@
         "statDesc" : "We show you here the statistics for the application",
         "statistics" : "Application Statistics",
         "vision" : "Our Vision"
+    },
+
+    "dash":{
+        "addJobTitle" : "Add Job Advertisement"
     }
 }

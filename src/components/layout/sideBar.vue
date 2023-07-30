@@ -55,7 +55,7 @@
         </router-link>
 
         <!-- single nav  -->
-        <router-link to="/" class="single_nav mb-4 w-100">
+        <router-link to="/orders" class="single_nav mb-4 w-100">
 
             <div class="d-flex align-items-center">
                 <div class="icon flex_center">
@@ -73,7 +73,7 @@
         </router-link>
 
         <!-- single nav  -->
-        <router-link to="/" class="single_nav mb-4 w-100">
+        <router-link to="/settings" class="single_nav mb-4 w-100">
 
             <div class="d-flex align-items-center">
                 <div class="icon flex_center">
@@ -153,7 +153,7 @@
         </router-link>
 
         <!-- single nav  -->
-        <router-link to="/" class="single_nav mb-4 w-100">
+        <router-link to="/contactUs" class="single_nav mb-4 w-100">
 
             <div class="d-flex align-items-center">
                 <div class="icon flex_center">

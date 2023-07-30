@@ -14,4 +14,22 @@ body.ltr{
         right: auto;
         transform: translate(50%, 15%);
     }    
+    #sidebar{
+        left:0;
+    }
+    #header{
+        right: 0 ;
+        left: auto ;
+    }
+    #sidebar .router-link-active::before {
+        left: -12%;
+        right: auto;
+    }
+    .form-group[data-v-904d044c]::before {
+        left: 25px;
+        right: auto;
+    }
+    .form-select {
+        background-position: right 0.75rem center !important;
+    }
 }
