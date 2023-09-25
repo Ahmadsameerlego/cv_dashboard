@@ -1,10 +1,10 @@
 <template>
     <section class="dash_content mt-3">
-        <h5 class="mainColor fw-bold"> الصفحة الرئيسية </h5>
-        <p class="grayColor fw-6"> نستعرض لكم بعض الاحصائيات الخاصة باللوحة </p>
+        <h5 class="mainColor fw-bold"> {{ $t('home.main') }} </h5>
+        <p class="grayColor fw-6"> {{  $t('home.desc')  }} </p>
 
         <div class="dash_statistics px-3 pt-4">
-            <h4 class="fw-bold mainColor"> الاحصائيات </h4>
+            <h4 class="fw-bold mainColor"> {{ $t('home.sta')  }} </h4>
 
             <div class="row">
 

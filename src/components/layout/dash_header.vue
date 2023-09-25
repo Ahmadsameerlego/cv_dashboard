@@ -4,11 +4,11 @@
             <!-- right hand  -->
             <div>
                 <h5 class="fw-bold mainColor">
-                    <span>لوحة التحكم</span>
+                    <span> {{ $t('header.dash') }} </span>
                     <img class="laughImoji" src="https://s3-alpha-sig.figma.com/img/98d1/c79e/41dcac2f20e1edb2f87601070cfc270b?Expires=1690761600&Signature=gx0v8i0QkPDLLc7YXRrJd~j64uryl0O9yhrj7AjjQT9x6f4iQWGYKsQ~LUtvsKbRf9ef8QTXFgY4cpPYQTWyLLagnhghbavp6--HyAfVFgtQvuc3JhChWLSLvx0kXHj5bUDZL1lQKku1~6sM9jNgHaQZ3UOjxUTrVzL0iuzfV4uNgAJGctdnOh~fPnowyzsr-ZW6teKWJ9ykqgVZOqMzUtIPCvImtz2rEMGpy-iVZyutnMN7S5hClJum223Jo1-kQ5tMBAJ68craFv48v3r8s69xYJoYgA6AAO0jNVj5U8llAHnW6ZSwXfJ9B-UF0qbPOQ1F~fbu0dBHMFFOS17b5w__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4" alt="">
                 </h5>
                 <p class="fw-6 grayColor fs-16">
-                    مرحبا بك , اهلا بعودتك
+                    {{ $t('header.welcome')  }}
                 </p>
             </div>
 
@@ -32,7 +32,7 @@
 
                 <!-- alerts  -->
                 <span class="alerts position-relative mx-5">
-                    <router-link to="/">
+                    <router-link to="/notifications">
                         <img :src="require('@/assets/imgs/Group 45983.svg')" alt="">
                         <div class="count flex_center">
                             3
@@ -88,6 +88,7 @@ export default {
         height: 110px;
         background-color: #fff;
         z-index: 11;
+        box-shadow: 0px 0px 10px #33333326;
         .laughImoji{
             width: 35px;
             height: 35px;

@@ -12,20 +12,20 @@
                             <div class="chat_header px-3 pt-3 pb-3 mb-2 d-flex align-items-center">
                                 <!-- chat image  -->
                                 <div class="chat_image br-50">
-                                    <img :src="require('@/assets/imgs/logo.png')" class="w-100 h-100 br-50" alt="user image">
+                                    <img :src="singleRoom.image" class="w-100 h-100 br-50" alt="user image">
                                 </div>
                                 <!-- chat details  -->
                                 <div class="chat_details mx-3">
-                                    <h6 class="fw-bold"> شركة أوامر الضحك </h6>
-                                    <p class="grayColor fw-6 mb-0"> frontend </p>
+                                    <h6 class="fw-bold"> {{   singleRoom.name }} </h6>
+                                    <p class="grayColor fw-6 mb-0"> {{singleRoom.job_title}}  </p>
                                 </div>
                             </div>
 
                             <!-- chat content  -->
-                            <div class="chat_messages pt-4 pb-4 px-3">
+                            <div class="chat_messages pt-4 pb-4 px-3" ref="chatSection" @scroll="handleScroll">
 
                                 <!-- single message => sent by me  -->
-                                <div class="single_message position-relative mb-3 sent_by_me d-flex align-items-center">
+                                <div class="single_message position-relative mb-3 sent_by_me d-flex align-items-center" v-for="message in messages" :key="message.id">
                                     <!-- user image  -->
                                     <div class="user_image br-50">
                                         <img :src="require('@/assets/imgs/logo.png')" class="br-50" alt="user image">
@@ -33,107 +33,341 @@
                                     <!-- user message  -->
                                     <div class="user_message position-relative mx-3">
                                         <!-- content  -->
-                                        <p class="mb-0"> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur quis provident sunt! Non consectetur modi soluta! Incidunt tempore cupiditate itaque aspernatur ut quis iusto, vel, labore dolor, facilis repellat blanditiis. </p>
+                                        <p class="mb-0"> 
+                                            {{  message.body  }}
+                                        </p>
                                     </div>
                                     <!-- time  -->
                                     <span class="time grayColor">
-                                        9 pm
+                                        {{  message.created_dt  }}
                                     </span>
+
+                                    <!-- edits  -->
+                                    <!-- <SpeedDial /> -->
                                 </div>
 
-                                <!-- single message => sent by other  -->
-                                <div class="single_message position-relative sent_by_other d-flex align-items-center">
-                                    <!-- user image  -->
-                                    <div class="user_image br-50">
-                                        <img :src="require('@/assets/imgs/logo.png')" class="br-50" alt="user image">
+                                <!--
+                                    "sent_by_me" class for the sender , remove it to the reciver 
+                                -->
+                                <!-- loader  -->
+                                <div class="loader" v-if="showLoader">
+                                    <div class="spinner-border" role="status" >
+                                        <span class="visually-hidden">Loading...</span>
                                     </div>
-                                    <!-- user message  -->
-                                    <div class="user_message position-relative mx-3">
-                                        <!-- content  -->
-                                        <p class="mb-0"> Lorem ipsum dolor sit amet consectetur, adipisicing elit. Consequatur quis provident sunt! Non consectetur modi soluta! Incidunt tempore cupiditate itaque aspernatur ut quis iusto, vel, labore dolor, facilis repellat blanditiis. </p>
-                                    </div>
-                                    <!-- time  -->
-                                    <span class="time grayColor">
-                                        9 pm
-                                    </span>
                                 </div>
 
 
                             </div>
-                            <InfiniteLoading target="#chat" @infinite="load"/>
 
                             <!-- chat footer  -->
                             <div class="chat_footer px-3 pt-2 pb-2 ">
 
                                 <form class="d-flex align-items-center">
-                                    <button class="btn upload" type="button">
+                                    <button class="btn upload position-relative" type="button">
+                                        <input type="file" name="" ref="file" class="uploadFile" @change="uploadFile">
                                         <i class="fa-solid fa-paperclip"></i>
                                     </button>
 
                                     <div class="w-100 form-group position-relative">
-                                        <textarea name="" id="" class="form-control" placeholder="اكتب رسالتك هنا"></textarea>
-                                        <button class="main_btn submit"> ارسال </button>
+                                        <textarea name="" id="" class="form-control" placeholder="اكتب رسالتك هنا" v-model="text"></textarea>
+                                        <button class="main_btn submit" @click.prevent="send"> ارسال </button>
                                     </div>
 
                                 </form>
                             </div>
                         </section>
-                    </div>
+                    </div> 
 
-                    <div class="col-md-4 mb-3">
+
+                    <!-- rooms  -->
+                    <div class="col-md-4 mb-3" >
                         <h6 class="fw-bold mainColor"> الرسائل </h6>
                         <p class="fw-6 grayColor"> يتم هنا عرض الرسائل الخاصة بك </p>
-                        <!-- shown chat  -->
+
+                        <!-- all rooms  -->    
                         <div class="allRooms showChats">
-                                <router-link to="/singleChat/1" class="colorInherit">
-                                <!-- single room  -->
-                                <section class="room pt-3 pb-3 px-3 position-relative d-flex align-items-center">
-                                    <!-- chat image  -->
-                                    <div class="chat_image">
-                                        <img :src="require('@/assets/imgs/logo.png')" alt="chat room image">
-                                    </div>
-                                    <!-- chat image  -->
-                                    <div class="chat_details mx-3">
-                                        <h5 class="fw-bold mb-3 fs-14"> شركة أوامر الشبكة </h5>
-                                        <p class="grayColor  fw-6 fs-12"> هذا النص هو مثال على نص يمكن ان يستدل </p>
-                                    </div>
 
-                                    <!-- absolute  -->
+                            <!-- single room  --> 
+                            <div class="single_room  mb-2" v-for="room in rooms" :key="room.id">
+                                <button @click="reRenderMessages(room.id)" class="btn w-100 colorInherit">
+                                    <!-- single room  -->
+                                    <section class="room pt-3 pb-3 px-3 position-relative d-flex align-items-center">
+                                        <!-- chat image  -->
+                                        <div class="chat_image">
+                                            <img :src="room.members[0].image" alt="chat room image">
+                                        </div>
+                                        <!-- chat image  -->
+                                        <div class="chat_details mx-3">
+                                            <h5 class="fw-bold mb-3 fs-14"> {{ room.members[0].name }}  </h5>
+                                            <p class="grayColor  fw-6 fs-12">  
+                                                {{ room.last_message_body }}
+                                            </p>
+                                        </div>
 
-                                    <!-- unreadCounter  -->
-                                    <div class="unread_count br-50 flex_center whiteColor">
-                                        2
-                                    </div>
+                                        <!-- absolute  -->
 
-                                    <!-- time  -->
-                                    <div class="time d-flex">
-                                        <img :src="require('@/assets/imgs/clock.svg')" alt="">
-                                        <span class="grayColor mx-2">منذ ساعة</span>
-                                    </div>
-                                </section>
-                            </router-link>
+                                        <!-- unreadCounter  -->
+                                        <div class="unread_count br-50 flex_center whiteColor">
+                                            2
+                                        </div>
+
+                                        <!-- time  -->
+                                        <div class="time d-flex">
+                                            <img :src="require('@/assets/imgs/clock.svg')" alt="">
+                                            <span class="grayColor mx-2">{{ room.last_message_created_dt  }}</span>
+                                        </div>
+                                    </section>
+
+                                </button>
+                            </div>
+                            
                         </div>
                     </div>
+                    
                 </div>
         </section>
     </section>
+
+
 </template>
 
 <script>
+// import {io} from 'socket.io-client'
+import socket from "@/plugins/socket.io";
 
 export default {
     data(){
         return{
-            page : 1
+            page : 1,
+            socket : null,
+            text : null,
+            // messages : [],
+            file : null,
+            type : 'text',
+            fileChosen : null,
+            user_id : null,
+            avatar : null,
+            receiver_id : 501,
+            room_id : null,
+            showLoader : false
         }
     },
     components:{
+    },
+    methods:{
+        // upload file 
+        uploadFile(){
+            this.file = this.$refs.file.files[0];
+            this.fileChosen = URL.createObjectURL(this.file);
+            this.text = this.$refs.file.files[0].name;
+            this.type = 'file' ;
+        },
+        // main method to send 
+        send(){
+            socket.emit("sendMessage", {
+                sender_id: JSON.parse(localStorage.getItem('user')).id,
+                sender_type: `Company`,
+                sender_name: 'Ezekiel Moses',
+                avater: this.avatar,
+                receiver_id: this.singleRoom.id,
+                receiver_type: `User`,
+                room_id: this.room_id,
+                type: this.type,
+                body: this.text,
+                // duration: 0,
+                // created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
+            });
+
+            this.messages.push({
+                // created_at: date,
+                // is_sender: 1,
+                // original_message: { body: body, type: $type },
+                // avatar : this.avatar,
+                // sent_by_me: true,
+                // type: type,
+                body: this.text.trim(),
+                created_dt :new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
+                // fileChosen : this.fileChosen
+
+            });
+
+            this.text = "";
+            this.$nextTick(() => {
+                this.scrollToBottom();
+            });
+            this.$store.dispatch('getchatRooms');
+
+        },
+        // scroll to bottom 
+        scrollToBottom(){
+            const chatSection = this.$refs.chatSection;
+            chatSection.scrollTop = chatSection.scrollHeight;
+        },
+        // get messages 
+        getMessages(){
+            this.$store.dispatch('getSingleRoomMessages', this.$route.params.id)
+            .then( ()=>{
+                this.scrollToBottom();
+            } )
+        },
+        // re render the messages and rooms 
+        reRenderMessages(room_id){
+            this.showLoader = true ;
+            this.$store.dispatch('getSingleRoom', room_id)
+            this.$store.dispatch('getSingleRoomMessages', room_id )
+            .then(()=>{
+                this.scrollToBottom();
+                this.showLoader = false ;
+            })
+
+            this.room_id = room_id ;
+            console.log(this.room_id)
+            
+        },
+        // handle scroll 
+        handleScroll(){ 
+            const chat_content = this.$refs.chatSection ;
+            if (chat_content.scrollTop === 0) {
+                // You've reached the end of the chat content, so you can call your function here
+                // this.showLoader = true ;
+                console.log('fff')
+            }
+        }
+    },
+    computed:{
+        rooms(){
+            return this.$store.state.rooms;
+        },
+        singleRoom(){
+            return this.$store.state.singleRoom; 
+        },
+        messages(){
+            // Get the messages from the store
+            const messages = this.$store.state.messages.data;
+
+            // Check if messages is defined
+            if (messages) {
+            // Use the reverse() method to reverse the array
+            const reversed = messages.slice().reverse();
+
+            // Return the reversed array
+            return reversed;
+            } else {
+            // Handle the case where messages is undefined
+            return [];
+            }
+        }
+    },
+    // mounted(){
+    //     window.addEventListener('scroll', this.handleScroll)
+    // },
+    created(){
+                
+        // socket = io('https://cvbroadcast.com:4730');
+        console.log(socket.io)
+        socket.io.on('connect', () => {
+          console.log('Connected to server');
+        });
+        socket.on('disconnect', () => {
+          console.log('Connected to server');
+        });
+        socket.on("connect_error", (error) => {
+            console.error("Socket.io connection error:", error);
+        });
+       
+
+        socket.emit("enterChat", {
+            user_id: JSON.parse(localStorage.getItem('user')).id,
+            user_type: `Company`,
+            room_id: this.$route.params.id,
+        });
+
+        this.$store.dispatch('getchatRooms');
         
+        this.$store.dispatch('getSingleRoom', this.$route.params.id);
+
+        this.getMessages();
+
+        socket.on('sendMessageRes', (data) => {
+            console.log(data);
+            console.log('neeeeeeew messssssageeeeeee');
+
+            //var date = new Date(data.created_at);
+            //date.toLocaleString("en-US", { timeZone: "Asia/Riyadh" });
+
+            
+            this.messages.push({
+                // sent_by_me: false,
+                type: data.type,
+                body: data.body,
+                // date: date.toDateString("en-US", { timeZone: "Asia/Riyadh" }),
+                // time: data.created_at,
+            });
+        })
+    
     }
 }
 </script>
 
-<style >
+<style lang="scss">
+.p-speeddial{
+    position:absolute;
+    left: 50px;
+    .p-button{
+        border: none;
+        background: transparent;
+        width: 20px;
+        height: 20px;
+        padding: 0;
+        svg{
+            color: #7e94ff;
+            width: 12px !important;
+            height: 12px !important;
+        }
+    }
+}
+ .result {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-weight: 300;
+    width: 400px;
+    padding: 10px;
+    text-align: center;
+    margin: 0 auto 10px auto;
+    background: #eceef0;
+    border-radius: 10px;
+  }
+.chat_content{
+    position: relative;
+    .loader{
+        &::before{
+            content:'';
+            position: absolute;
+            width:100%;
+            height:100%;
+            top:0;
+            left:0;
+            z-index: 1;
+            background: #3333332d;
+        }
+        .spinner-border{
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            width: 50px;
+            height: 50px;
+        }
+    }
+}
+.uploadFile{
+    position:absolute;
+    width: 100%;
+    height: 100%;
+    top:0;
+    right:0;
+    opacity: 0;
+}
 .p-button {
     color: #ffffff;
     background: transparent;

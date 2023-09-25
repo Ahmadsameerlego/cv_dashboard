@@ -6,27 +6,19 @@
   
     <section class="content px-3 pt-3">
       <!-- dashboard  -->
-      <homeViewVue :ads="ads" />
+      <homeViewVue />
     </section>
   </template>
   
   <script>
   import sideBarVue from '@/components/layout/sideBar.vue';
   import dashHeaderVue from '@/components/layout/dash_header.vue';
-  import homeViewVue from '@/components/dashboard/ordersComponents.vue';
+  import homeViewVue from '@/components/dashboard/notificationComponent.vue';
   export default {
       components : {
           sideBarVue,
           dashHeaderVue,
           homeViewVue
-      },
-      computed:{
-        ads(){
-          return this.$store.state.ads ;
-        }
-      },
-      created(){
-        this.$store.dispatch('getAds')
       }
   }
   </script>

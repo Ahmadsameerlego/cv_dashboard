@@ -32,4 +32,24 @@ body.ltr{
     .form-select {
         background-position: right 0.75rem center !important;
     }
+    #sidebar .single_nav .arrow {
+        right: 16px ;
+        left: auto ;
+        transform: rotate(180deg);
+    }
+    #search .fa-chevron-left, .orders_cards .fa-chevron-left{
+        transform: rotate(180deg);
+    }
+    .addJobForm .form_icon {
+        right: auto;
+        left: 5px;
+    }
+    .addJobForm .form_icon2 {
+        left: auto;
+        right: 9px;
+    }
+    .orders_cards .single_order .abs .date, .orders_cards .single_order .abs .more {
+        left: auto;
+        right: 20px;
+    }    
 }

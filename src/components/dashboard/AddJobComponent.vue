@@ -2,31 +2,44 @@
   <section id="addJob" class="pt-3 pb-3 px-3">
     <div>
       <h6 class="fw-bold mainColor"> {{ $t('dash.addJobTitle') }} </h6>
-      <p class="grayColor fw-6"> يمكنك اضافة اعلان وظيفي من هنا </p>
+      <p class="grayColor fw-6"> {{  $t('job.desc')  }} </p>
     </div>
 
     <!-- form  -->
     <section class="addJobForm">
-      <form>
+      <form @submit.prevent="addAdvertisement" ref="addAdvsForm">
         <div class="row">
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
-              <label for=""> المسمى الوظيفي </label>
-              <input type="text" class="form-control job_form" placeholder="ادخل المسمى الوظيفي">
+              <label for=""> {{ $t('search.jobName')  }} </label>
+              <input type="text" class="form-control job_form" :placeholder="$t('job.namePlace')"  v-model="job_name" name="job_name">
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
-            <div class="form-group position-relative">
+            <div class="form-group  position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/clock.svg')" alt="">
-              <label for=""> نوع الوظيفة </label>
-              <select class="form-select job_form">
-                <option value="" selected> اختر نوع الوظيفة </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{  $t('search.jobType')  }} </label>
+
+
+              <Dropdown v-model="selectedActivity"  :options="activities" filter optionLabel="title" :placeholder="$t('job.chooseType')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
+
             </div>
           </div>
 
@@ -34,123 +47,222 @@
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
               <label for=""> المجال الوظيفي </label>
-              <select class="form-select job_form">
-                <option value="" selected> اختر المجال الوظيفي </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <Dropdown v-model="selectedEmp"  :options="emps" filter optionLabel="title" :placeholder="$t('job.chooseEmp')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
+              
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
-              <label for=""> اسم التخصص </label>
-              <select class="form-select job_form">
-                <option value="" selected> اختر اسم التخصص </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{ $t('job.name')  }} </label>
+              
+
+              <Dropdown v-model="selectedSpec"  :options="specs" filter optionLabel="title" :placeholder="$t('job.chooseName')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
+
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
-              <label for=""> فئه الوظيفه </label>
-              <select class="form-select job_form">
-                <option value="" selected> الرحاء ادخال الوظيفه </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{ $t('job.cat')  }} </label>
+
+              <Dropdown v-model="selectedCat"  :options="cats" optionLabel="title" :placeholder="$t('job.chooseCat')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/gender.svg')" alt="">
-              <label for=""> الجنس </label>
-              <select class="form-select job_form">
-                <option value="" selected> اختر نوع الجنس </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{  $t('job.gender')  }} </label>
+
+              <Dropdown v-model="selectedGender"  :options="genders" optionLabel="title" :placeholder="$t('job.chooseGender')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
+
+
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
-              <label for=""> المؤهل التعليمي </label>
-              <select class="form-select job_form">
-                <option value="" selected> الرحاء ادخال المؤهل المطلوب </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{  $t('search.qual')  }} </label>
+
+              <Dropdown v-model="selectedQual"  :options="quals" filter optionLabel="title" :placeholder="$t('job.chooseQual')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
+
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/grayBag.svg')" alt="">
-              <label for=""> الخبرة </label>
-              <select class="form-select job_form">
-                <option value="" selected> الرجاء اختيار الخبره المطلوبه </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{ $t('search.exper') }} </label>
+             
+              <Dropdown v-model="selectedExper"  :options="expers" filter optionLabel="title" :placeholder="$t('job.chooseExper')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
-              <label for=""> المهام والمسئوليات </label>
-              <input type="text" class="form-control job_form" placeholder="ادخل المهام والمسئوليات">
+              <label for=""> {{  $t('job.res')  }} </label>
+              <input type="text" class="form-control job_form" :placeholder="$t('job.resPlace')" name="tasks" v-model="tasks">
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/grayBorrow.svg')" alt="">
-              <label for="">   الراتب  <span class="if_exist"> ان وجد* </span> </label>
-              <input type="text" class="form-control job_form" placeholder="ادخل الراتب">
+              <label for="">   {{  $t('job.salary')  }}  <span class="if_exist"> {{ $t('job.ifExist') }}* </span> </label>
+              <input type="text" class="form-control job_form" placeholder="ادخل الراتب" v-model="salary" name="salary">
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/grayBag.svg')" alt="">
-              <label for=""> المهارات </label>
-              <select class="form-select job_form">
-                <option value="" selected> الرجاء اختيار الخبره المطلوبه </option>
+              <label for=""> {{  $t('search.skills')  }} </label>
+
+              <!-- <select class="form-select job_form">
+                <option value="" selected> {{  $t('job.chooseSkill')  }} </option>
                 <option value="1" > 1 </option>
                 
-              </select>
+              </select> -->
+
+              <MultiSelect v-model="selectedSkill" :options="skills" filter optionLabel="title" :placeholder="$t('search.skills')"
+                :maxSelectedLabels="3" class="w-full md:w-20rem" />
+
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/grayBag.svg')" alt="">
-              <label for=""> نسبة التطابق </label>
-              <select class="form-select job_form">
-                <option value="" selected> الرجاء اختيار الخبره المطلوبه </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{ $t('job.percent')  }} </label>
+
+              <Dropdown v-model="selectedRate"  :options="rates"  optionLabel="name" :placeholder="$t('job.choosePer')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.name }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.value }}</div>
+                    </div>
+                </template>
+              </Dropdown>
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/grayLocation.png')" alt="">
-              <label for=""> المدينة </label>
-              <select class="form-select job_form">
-                <option value="" selected> الرجاء اختيار الخبره المطلوبه </option>
-                <option value="1" > 1 </option>
-                
-              </select>
+              <label for=""> {{  $t('search.city')  }} </label>
+
+              <Dropdown v-model="selectedCity"  :options="cities" optionLabel="name" :placeholder="$t('job.chooseCity')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.name }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.name }}</div>
+                    </div>
+                </template>
+              </Dropdown>
+
             </div>
           </div>
 
@@ -159,8 +271,8 @@
           <div class="col-md-6 mb-3">
               <div class="position-relative flex-auto">
 
-                  <label for="integeronly" class="label fw-bold block mb-2"> مكان الإقامة </label>
-                  <input type="text" class="form-control job_form" v-model="address" @focus="googleMap=true" placeholder="الرجاء ادخال مكان الإقامة">
+                  <label for="integeronly" class="label fw-bold block mb-2"> {{ $t('job.place') }} </label>
+                  <input type="text" class="form-control job_form" v-model="address"  @focus="googleMap=true" placeholder="الرجاء ادخال مكان الإقامة">
                   <!-- icon  -->
                   <div class="form_icon">
                     <img :src="require('@/assets/imgs/grayLocation.png')" alt="">
@@ -191,7 +303,6 @@
                         @mouseover="onMarkerDragEnd($event)"
                     />
                     </GMapMap>
-
               </Dialog>
           </div>
 
@@ -199,28 +310,31 @@
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
-              <label for=""> الشهادات المهنية </label>
-              <select class="form-select job_form">
-                <option value="" selected> الرجاء اختيار الشهادات المهنية </option>
+              <label for=""> {{  $t('job.cer')  }} </label>
+              <!-- <select class="form-select job_form">
+                <option value="" selected> {{ $t('job.cerDesc')  }} </option>
                 <option value="1" > 1 </option>
                 
-              </select>
+              </select> -->
+              <MultiSelect v-model="selectedCert" :options="certs" filter optionLabel="title" :placeholder="$t('job.cerDesc')"
+                :maxSelectedLabels="3" class="w-full md:w-20rem" />
+
             </div>
           </div>
 
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
-              <label for=""> شروط الوظيفة </label>
-              <input type="text" class="form-control job_form" placeholder="ادخل شروط الوظيفة">
+              <label for=""> {{ $t('job.conditions') }} </label>
+              <input type="text" class="form-control job_form" :placeholder="$t('job.conPlace')" v-model="conditions" name="conditions">
             </div>
           </div>
 
-          <!-- birthday  -->
+          <!-- published_at  -->
           <div class="col-md-6 mb-3">
             <div class="position-relative flex-auto">
 
-                <label for="integeronly" class="label fw-bold block mb-2"> تاريخ الميلاد </label>
-                <Calendar v-model="date" class="d-block" placeholder="الرجاء ادخال تاريخ الميلاد" />
+                <label for="integeronly" class="label fw-bold block mb-2"> تاريخ بداية الاعلان </label>
+                <Calendar v-model="published_at" name="published_at" class="d-block" placeholder="الرجاء ادخال تاريخ بداية الاعلان"  @change="show" />
 
                 <!-- icon  -->
                 <div class="inputIcon">
@@ -229,12 +343,12 @@
 
             </div>
           </div>
-          <!-- birthday  -->
+          <!-- expire_at  -->
           <div class="col-md-6 mb-3">
             <div class="position-relative flex-auto">
 
-                <label for="integeronly" class="label fw-bold block mb-2"> تاريخ الميلاد </label>
-                <Calendar v-model="date2" class="d-block" placeholder="الرجاء ادخال تاريخ الميلاد" />
+                <label for="integeronly" class="label fw-bold block mb-2"> تاريخ انتهاء الاعلان </label>
+                <Calendar v-model="expire_at" name="expire_at" class="d-block" placeholder="الرجاء ادخال تاريخ انتهاء الاعلان" />
 
                 <!-- icon  -->
                 <div class="inputIcon">
@@ -243,23 +357,34 @@
 
             </div>
           </div>
-              
-
-
-          
-
+                   
 
         </div>
-        <div class="flex_center" v-if="isAdd==true">
-          <button class="main_btn pt-2 pb-2 px-3 w-25"> اضافة </button>
+        <div class="flex_center" v-if="isAdd==true" >
+          <button class="main_btn pt-2 pb-2 px-3 w-25" :disabled="disabled">
+            <span  v-if="!disabled"> اضافة </span>
+            <div class="spinner-border" role="status" v-if="disabled">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </button>
         </div>
         <div class="flex_center" v-if="isEdit==true">
-          <button class="main_btn pt-2 pb-2 px-3 w-25"> حفظ التعديلات </button>
-          <button class="main_btn cancel pt-2 pb-2 px-3 w-25 mx-3"> تراجع </button>
+          <button class="main_btn pt-2 pb-2 px-3 w-25" 
+            @click.prevent="editJob"
+            :disabled="disabled2"
+            >
+             <span  v-if="!disabled2"> حفظ التعديلات </span>
+              <div class="spinner-border" role="status" v-if="disabled2">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+          </button>
+          <button class="main_btn cancel pt-2 pb-2 px-3 w-25 mx-3" type="button" @click="resetAd"> تراجع </button>
         </div>
       </form>
     </section>
   </section>
+
+  <Toast />
 </template>
 
 <script>
@@ -267,6 +392,11 @@
 import Dialog from 'primevue/dialog';
 import Calendar from 'primevue/calendar';
 
+import Dropdown from 'primevue/dropdown';
+import MultiSelect from 'primevue/multiselect';
+import Toast from 'primevue/toast';
+
+import axios from 'axios';
 export default {
   data(){
     return{
@@ -276,19 +406,106 @@ export default {
           lng: 0
       },
       currentLocation: {},
-      address: '',
+      map_desc: '',
+      address : '',
       googleMap : false,
-      date : null,
-      date2: null,
 
       // check if this edit or add 
       isEdit : false,
-      isAdd : false
+      isAdd : false,
+
+      selectedActivity: null,
+      selectedEmp : null,
+      selectedSpec : null,
+      selectedQual : null,
+      selectedExper : null,
+      selectedSkill : [],
+      selectedCert : [],
+      genders : [
+        {
+          id : 1 ,
+          title : 'male',
+          
+        },
+        {
+          id : 2,
+          title : 'female'
+        }
+      ],
+      selectedGender : null,
+      selectedCat : null,
+      selectedCity : null,
+      job_name : '',
+      tasks : '',
+      salary : '',
+      conditions : '',
+      published_at : null,
+      expire_at : null,
+      rates : [
+        {
+          id :1 , 
+          name : '10%',
+          value : '10'
+        },
+        {
+          id :2 , 
+          name : '20%',
+          value : '20'
+        },
+        {
+          id :3 , 
+          name : '30%',
+          value : '30'
+        },
+        {
+          id :4 , 
+          name : '40%',
+          value : '40'
+        },
+        {
+          id :5 , 
+          name : '50%',
+          value : '50'
+        },
+        {
+          id :6 , 
+          name : '60%',
+          value : '60'
+        },
+        {
+          id :7 , 
+          name : '70%',
+          value : '70'
+        },
+        {
+          id :8 , 
+          name : '80%',
+          value : '80'
+        },
+        {
+          id :9 , 
+          name : '90%',
+          value : '90'
+        },
+        {
+          id :10 , 
+          name : '100%',
+          value : '100'
+        },
+      ],
+      selectedRate :null ,
+      disabled : false,
+      disabled2 : false ,
+      // for edit 
+      ad_id : null,
+      ad : {},
+      company : {},
+      // skills : [],
+      // certifications : []
     }
   },
-  methods:{
-
-        // get current location  
+  methods:{             
+      // get current location  
         geolocation() {
             navigator.geolocation.getCurrentPosition((position) => {
                 this.locations = {
@@ -329,26 +546,337 @@ export default {
             };
             this.address = place.formatted_address;
           }
+        },
+
+        // add advertisement 
+        async addAdvertisement(){
+
+          this.disabled = true ; 
+          const fd = new FormData( this.$refs.addAdvsForm );
+
+          function appendedIfSelected( formData, key , selectedValue ){
+            if( selectedValue ){
+              formData.append(key , selectedValue.id)
+            }
+          }
+
+          appendedIfSelected(fd, 'employment_id', this.selectedEmp);
+          appendedIfSelected(fd, 'specialization_id', this.selectedSpec);
+          appendedIfSelected(fd, 'category_id', this.selectedCat);
+          appendedIfSelected(fd, 'type_id', this.selectedActivity);
+          appendedIfSelected(fd, 'qualification_id', this.selectedQual);
+          appendedIfSelected(fd, 'experience_id', this.selectedExper);
+          appendedIfSelected(fd, 'city_id', this.selectedCity);
+
+          
+          if( this.selectedRate ){
+            fd.append('accept_rate', this.selectedRate.value)
+          }
+          if( this.address ){
+            fd.append('map_desc', this.address)
+          }
+          if( this.locations ){
+            fd.append('lat', this.locations.lat)
+            fd.append('lng', this.locations.lng)
+          }
+          if( this.published_at ){
+            const date = new Date(this.published_at);
+
+            // Extract day, month, and year from the Date object
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // Months are zero-based, so add 1
+            const year = date.getFullYear();
+
+            // Format the date components as a string in the desired format
+            const formattedDate = `${day}-${month}-${year}`;
+
+            fd.append('published_at', formattedDate)
+          }
+          if( this.expire_at ){
+            const date = new Date(this.expire_at);
+
+            // Extract day, month, and year from the Date object
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // Months are zero-based, so add 1
+            const year = date.getFullYear();
+
+            // Format the date components as a string in the desired format
+            const formattedDate = `${day}-${month}-${year}`
+            fd.append('expire_at', formattedDate)
+          }
+          if( this.selectedGender ){
+            fd.append('gender', this.selectedGender.title)
+          }
+          for (let i = 0; i < this.selectedSkill.length; i++) {
+            appendedIfSelected(fd, `skills[${i}]`, this.selectedSkill[i]);
+          }
+
+          for (let i = 0; i < this.selectedCert.length; i++) {
+            appendedIfSelected(fd, `certifications[${i}]`, this.selectedCert[i]);
+          }
+
+          const response = await this.$store.dispatch('addJobAdds', fd);
+          if( response.success === true ){
+            this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
+            this.disabled = false ;
+
+          }else{
+            this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
+            this.disabled = false ;
+          }
+
+          console.log(response)
+
+        },
+
+        // get ad details for edit 
+        async getAdDetails(){
+            const fd = new FormData;
+            const token = localStorage.getItem('token');
+            const headers = {
+              Authorization: `Bearer ${token}`,
+            };
+            fd.append('advertisement_id', this.ad_id);
+            await axios.post('company/advertisements/show', fd , {headers})
+            .then( (res)=>{
+
+              const response = res.data.data ;
+              this.ad = response ;
+
+
+              this.job_name = response.job_name ;
+              this.address = response.map_desc ;
+              this.map_desc = response.map_desc ;
+              this.locations.lat = parseFloat(response.lat) ;
+              this.locations.lng =  parseFloat(response.lng);
+              this.salary = response.salary ;
+
+              this.conditions = response.conditions ;
+              this.expire_at = response.expire_at ;
+              this.published_at = response.format_published_at ;
+              this.selectedSkill = response.skills ;
+              this.selectedCert = response.certifications ;
+              this.selectedEmp = response.category ;
+              this.selectedQual = response.qualification ;
+              this.selectedExper = response.experience ;
+              this.selectedCity = response.city ;
+              this.selectedSpec = response.specialization ;
+               
+              this.selectedActivity = response.type ;
+              this.selectedCat = response.category ;
+              this.tasks = response.tasks ;
+
+              for( let i = 0 ; i < this.rates.length ; i++ ){
+                if ( response.accept_rate == this.rates[i].value ){
+                  // console.log('the ratio is exist')
+                  this.selectedRate = this.rates[i] ;
+                }
+              }
+
+
+              if( response.gender == 'male' ){
+                this.selectedGender = this.genders[0];
+              }else if( response.gender == 'female' ){
+                this.selectedGender = this.genders[1];
+              }
+              this.company = response.company;
+            } )
+        },
+
+        // edit job ad 
+        async editJob(){
+          this.disabled2 = true ; 
+          const fd = new FormData( this.$refs.addAdvsForm );
+          fd.append('advertisement_id', localStorage.getItem('ad_id'))
+          function appendedIfSelected( formData, key , selectedValue ){
+            if( selectedValue ){
+              formData.append(key , selectedValue.id)
+            }
+          }
+
+          appendedIfSelected(fd, 'employment_id', this.selectedEmp);
+          appendedIfSelected(fd, 'specialization_id', this.selectedSpec);
+          appendedIfSelected(fd, 'category_id', this.selectedCat);
+          appendedIfSelected(fd, 'type_id', this.selectedActivity);
+          appendedIfSelected(fd, 'qualification_id', this.selectedQual);
+          appendedIfSelected(fd, 'experience_id', this.selectedExper);
+          appendedIfSelected(fd, 'city_id', this.selectedCity);
+
+          if( this.selectedRate ){
+            fd.append('accept_rate', this.selectedRate.value)
+          }
+          if( this.address ){
+            fd.append('map_desc', this.address)
+          }
+          if( this.locations ){
+            fd.append('lat', this.locations.lat)
+            fd.append('lng', this.locations.lng)
+          }
+          if( this.published_at ){
+            const date = new Date(this.published_at);
+
+            // Extract day, month, and year from the Date object
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // Months are zero-based, so add 1
+            const year = date.getFullYear();
+
+            // Format the date components as a string in the desired format
+            const formattedDate = `${day}-${month}-${year}`;
+
+            fd.append('published_at', formattedDate)
+          }
+          if( this.expire_at ){
+            const date = new Date(this.expire_at);
+
+            // Extract day, month, and year from the Date object
+            const day = date.getDate();
+            const month = date.getMonth() + 1; // Months are zero-based, so add 1
+            const year = date.getFullYear();
+
+            // Format the date components as a string in the desired format
+            const formattedDate = `${day}-${month}-${year}`
+            fd.append('expire_at', formattedDate)
+          }
+          if( this.selectedGender ){
+            fd.append('gender', this.selectedGender.title)
+          }
+          for (let i = 0; i < this.selectedSkill.length; i++) {
+            appendedIfSelected(fd, `skills[${i}]`, this.selectedSkill[i]);
+          }
+          for (let i = 0; i < this.selectedCert.length; i++) {
+            appendedIfSelected(fd, `certifications[${i}]`, this.selectedCert[i]);
+          }
+
+          const response = await this.$store.dispatch('editJobAds', fd);
+          if( response.success === true ){
+            this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
+            this.disabled2 = false ;
+            this.getAdDetails();
+            setTimeout(() => {
+              this.$router.push(`/ownDetails/${this.ad_id}`)
+            }, 3000);
+
+          }else{
+            this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
+            this.disabled2 = false ;
+          }
+
+        },
+
+        resetAd(){
+          this.getAdDetails()
         }
         
   },
+  computed:{
+    activities(){
+      return this.$store.state.activites ;
+    },
+    emps(){
+      return this.$store.state.employments ;
+    },
+    specs(){
+      return this.$store.state.specializations ;
+    },
+    quals(){
+      return this.$store.state.qualifications ;
+    },
+    expers (){
+      return this.$store.state.expers ;
+    },
+    skills(){
+      return this.$store.state.skills ;
+    },
+    certs(){
+      return this.$store.state.certifications ;
+    },
+    cats(){
+      return this.$store.state.categories ;
+    },
+    cities(){
+      return this.$store.state.cities; 
+    },
+    published(){
+      const date = new Date(this.published_at);
+      // Extract day, month, and year components
+      const day = date.getDate().toString().padStart(2, '0');
+      const month = (date.getMonth() + 1).toString().padStart(2, '0');
+      const year = date.getFullYear().toString().slice(-2);
+      // Create the formatted date string
+      return `${day}-${month}-${year}`;
+    }
+  },
   components:{
     Dialog,
-    Calendar
+    Calendar,
+    Dropdown,
+    MultiSelect,
+    Toast
   },  
   mounted(){
     this.geolocation();
     if( this.$route.fullPath.includes('editJob')){
       this.isEdit = true;
+      // get add details for edit 
+      this.getAdDetails()
+
     }
     if( this.$route.fullPath.includes('addJob') ){
       this.isAdd = true;
     }
+
+
+  },
+  beforeMount(){
+    // get ad_id for edit 
+    this.ad_id = localStorage.getItem('ad_id');
+  },
+  created(){
+    this.$store.dispatch('getActivities');
+    this.$store.dispatch('getEmp');
+    this.$store.dispatch('getSpec');
+    this.$store.dispatch('getQual');
+    this.$store.dispatch('getExp');
+    this.$store.dispatch('getSkills');
+    this.$store.dispatch('getCertifications');
+    this.$store.dispatch('getCat');
+    this.$store.dispatch('getCities');
+  },
+  watch:{
+    selectedActivity(){
+      console.log(this.selectedActivity)
+    }
   }
+  
 }
 </script>
 
 <style lang="scss">
+  #addJob{
+    .p-dropdown{
+      position: relative !important;
+      width: 100%;
+      top: 0;
+      padding-right: 16px;
+    }
+    .p-dropdown-label{
+      color: #a0a0a0;
+      font-size: 14px;
+      font-family: 'Cairo', sans-serif !important;
+    }
+    .p-multiselect{
+      background: #f8f8f8 !important;
+    }
+    .p-calendar .p-inputtext{
+      background: #f8f8f8;
+      padding-left: 35px;
+      padding-right: 37px;
+      font-size: 14px;
+      &::placeholder{
+        color:#9f9f9f
+      }
+    }
+  }
   .if_exist{
     font-weight: 500;
     font-size: 10px;
@@ -379,8 +907,16 @@ export default {
     .form_icon{
       position: absolute;
       z-index: 9;
-      top: 37px;
+      top: 58%;
       right: 5px;
+      width: 16px;
+      height: 16px;
+      object-fit: cover;
+      img{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
     }
     .form_icon2{
       position: absolute;
@@ -414,7 +950,13 @@ export default {
     right: 50% !important;
     transform: translate(50%, 50%) !important;
   }
-  .p-inputtext{
+  
+  .p-calendar .p-inputtext{
+    width:100% !important;
+  }
+</style>
+<style scoped>
+.p-inputtext{
     position: relative !important;
       background-color: #F8F8F8 !important;
       border: 1px solid #E2E8F0 !important;
@@ -423,8 +965,5 @@ export default {
       padding: 12px 35px !important;
       font-family: "Cairo", sans-serif !important;
 
-  }
-  .p-calendar .p-inputtext{
-    width:100% !important;
   }
 </style>

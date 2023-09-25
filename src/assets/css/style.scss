@@ -94,6 +94,9 @@ $main-color2: #6D98DB   ;
 .fw-5{
     font-weight: 500;
 }
+.br-3{
+    border-radius: 3px;
+}
 .br-5{
     border-radius: 5px;
 }
@@ -186,3 +189,31 @@ $main-color2: #6D98DB   ;
 .vjs_video_3-dimensions, .vjs_video_796-dimensions {
     height: 155px !important;
 }
+
+
+
+
+
+/******* Prime Toast *******/
+.p-toast .p-toast-message {
+    /* border-width: 0 0 0 6px !important; */
+    border-width: 0 6px 0 0 !important;
+  }
+  .p-toast .p-toast-message-content {
+    gap: 12px !important;
+    align-items: center !important;
+  }
+  .p-toast-message-icon {
+    width: 20px !important;
+    height: 20px !important;
+  }
+  .p-toast-message-text {
+    font-family: inherit;
+  }
+  .p-toast-detail:empty {
+    display: none;
+  }
+  .p-toast .p-toast-message .p-toast-message-content .p-toast-detail{
+    margin: 0 !important;
+  }
+  

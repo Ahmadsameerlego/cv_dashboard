@@ -1,6 +1,6 @@
 <template>
     <section id="profile" class="pt-3 pb-3 px-3">
-        <h6 class="fw-bold mainColor"> البروفايل الشخصي </h6>
+        <h6 class="fw-bold mainColor"> {{ $t('profile.title') }} </h6>
 
         <div class="row mt-3">
 
@@ -9,16 +9,18 @@
 
                 
 
-                <Skeleton v-if="showSkeleton" width="10rem" class="mb-2">x`</Skeleton>
+                <Skeleton v-if="showSkeleton" width="10rem" class="mb-2"></Skeleton>
                     <!-- single profile card => main info  -->
                     <section class="profile_card mb-3">
                         <!-- card header  -->
                         <div class="card_header">
-                            <p class="header_title">البيانات الشخصيه:</p>
+                            <p class="header_title">{{ $t('profile.main') }}:</p>
                         </div>
                         <!-- card content  -->
                         <div class="card_content pt-3">
-                            <!-- top  -->
+                            <!-- 
+                                top  
+                            -->
                             <div class="d-flex justify-content-between align-items-center mb-4">
                                 
                                 <div class="main_info d-flex align-items-center">
@@ -27,7 +29,7 @@
                                         <img :src="require('@/assets/imgs/logo.png')" alt="profile image">
                                     </div>
                                     <div class="mx-2">
-                                        <p class="fw-bold fs-15 mb-1"> أحمد سمير  </p>
+                                        <p class="fw-bold fs-15 mb-1"> {{  user.name  }}  </p>
                                         <div>
                                             <img :src="require('@/assets/imgs/redGender.svg')" alt="">
                                             <span class="fw-bold fs-12 mx-1"> ذكر </span>
@@ -47,10 +49,10 @@
                                 <div>
                                     <p class="grayColor fw-6 mb-1">
                                         <img :src="require('@/assets/imgs/bluePhone.svg')" alt="">
-                                        <span class="mx-2">رقم الجوال :</span>
+                                        <span class="mx-2">{{ $t('set.phone')  }} :</span>
                                     </p>
                                     <p class="fw-bold">
-                                        01013746111
+                                        {{ user.phone }}
                                     </p>
                                 </div>
 
@@ -58,10 +60,10 @@
                                 <div>
                                     <p class="grayColor fw-6 mb-1">
                                         <img :src="require('@/assets/imgs/blueMail.svg')" alt="">
-                                        <span class="mx-2">البريد الالكتروني :</span>
+                                        <span class="mx-2"> {{ $t('set.email')  }} :</span>
                                     </p>
                                     <p class="fw-bold">
-                                        01013746111
+                                        {{ user.email }}
                                     </p>
                                 </div>
 
@@ -69,10 +71,10 @@
                                 <div>
                                     <p class="grayColor fw-6 mb-1">
                                         <img :src="require('@/assets/imgs/blueCalender.svg')" alt="">
-                                        <span class="mx-2">تاريخ الميلاد :</span>
+                                        <span class="mx-2"> {{ $t('profile.birthday')  }} :</span>
                                     </p>
                                     <p class="fw-bold">
-                                        01013746111
+                                        {{ user.birth_date }}
                                     </p>
                                 </div>
 
@@ -80,10 +82,10 @@
                                 <div>
                                     <p class="grayColor fw-6 mb-1">
                                         <img :src="require('@/assets/imgs/blueNation.svg')" alt="">
-                                        <span class="mx-2">الجنسية :</span>
+                                        <span class="mx-2"> {{  $t('profile.nat')  }} :</span>
                                     </p>
                                     <p class="fw-bold">
-                                        01013746111
+                                        {{ user.nationality }}
                                     </p>
                                 </div>
                             </div>
@@ -95,7 +97,7 @@
                 <section class="profile_card mb-3">
                     <!-- card header  -->
                     <div class="card_header">
-                        <p class="header_title">العنوان:</p>
+                        <p class="header_title"> {{ $t('profile.address')  }} :</p>
                     </div>
                     <!-- card content  -->
                     <div class="card_content pt-3">
@@ -108,10 +110,10 @@
                             <div>
                                 <p class="grayColor fw-6 mb-1">
                                     <img :src="require('@/assets/imgs/location.svg')" alt="">
-                                    <span class="mx-2">المدينة :</span>
+                                    <span class="mx-2"> {{ $t('search.city')  }} :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    الرياض
+                                    {{ user.city }}
                                 </p>
                             </div>
 
@@ -122,7 +124,7 @@
                                     <span class="mx-2">مكان الاقامة :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    المملكه العربيه السعوديه, حي المنفوحه
+                                    {{ user.map_desc }}
                                 </p>
                             </div>
                         </div>
@@ -148,7 +150,7 @@
                                     <span class="mx-2">المؤهل :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    بكالوريوس حاسبات ومعلومات
+                                    {{ user.qualification }}
                                 </p>
                             </div>
 
@@ -159,7 +161,7 @@
                                     <span class="mx-2">مجال العمل :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    الهندسه البرمجيه
+                                    {{ user.employment }}
                                 </p>
                             </div>
 
@@ -169,8 +171,8 @@
                                     <img :src="require('@/assets/imgs/redBag.svg')" alt="">
                                     <span class="mx-2">المهارات :</span>
                                 </p>
-                                <p class="fw-bold">
-                                    FIGMA - ADOBE XD
+                                <p class="fw-bold" v-for="skill in user.skills" :key="skill">
+                                    {{ skill }}
                                 </p>
                             </div>
 
@@ -181,7 +183,7 @@
                                     <span class="mx-2">الشركة الحالية :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    شركه اوامر الشبكه
+                                    {{ user.company_name }}
                                 </p>
                             </div>
 
@@ -192,7 +194,7 @@
                                     <span class="mx-2">المسمى الوظيفي :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    UI_UX Designer مصمم واجهات
+                                    {{  user.job_title  }}
                                 </p>
                             </div>
 
@@ -203,7 +205,7 @@
                                     <span class="mx-2">الخبرة :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    2 - 5 سنوات
+                                    {{ user.experience }}
                                 </p>
                             </div>
 
@@ -213,8 +215,8 @@
                                     <img :src="require('@/assets/imgs/redBag.svg')" alt="">
                                     <span class="mx-2">الشهادات المهنية :</span>
                                 </p>
-                                <p class="fw-bold">
-                                    IBM - IEEE
+                                <p class="fw-bold" v-for="cer in user.certifications" :key="cer">
+                                    {{ cer }}
                                 </p>
                             </div>
 
@@ -225,7 +227,7 @@
                                     <span class="mx-2">التخصص :</span>
                                 </p>
                                 <p class="fw-bold">
-                                    مصمم واجهات 
+                                    {{ user.specialization }} 
                                 </p>
                             </div>
 
@@ -245,9 +247,14 @@
                     </router-link>
 
                     <!-- accept  -->
-                    <button class="btn accept whiteColor main_btn pt-2 pb-2" v-ripple>قبول</button>
+                    <button class="btn accept whiteColor main_btn pt-2 pb-2" v-ripple :disabled="acceptDisabled" @click.prevent="acceptApplication">
+                        <span v-if="!acceptDisabled">قبول</span>
+                        <div class="spinner-border" role="status" v-if="acceptDisabled">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </button>
                     <!-- refuse  -->
-                    <button class="btn refuse whiteColor main_btn pt-2 pb-2" v-ripple>رفض</button>
+                    <button class="btn refuse whiteColor main_btn pt-2 pb-2" v-ripple @click="refuseApplication=true">رفض</button>
                 </section>
 
             </div>
@@ -269,7 +276,7 @@
                             <div class="file_download position-relative flex_between">
                                 <p class="fw-6 mb-0"> السيرة الذاتية </p>
                                 <img :src="require('@/assets/imgs/dash_pdf.svg')" alt="">
-                                <button @click="downloadPDF('@/assets/imgs/pdf.pdf')"  class="download-button">Download PDF</button>
+                                <button @click="downloadPDF(`${user.cv}`)"  class="download-button">Download PDF</button>
                             </div>
                         </div>
                     </div>
@@ -288,7 +295,7 @@
                         <!-- bottom  -->
                         <div class="d-flex">
                               <video-player
-                                src="https://dafftube.org/wp-content/uploads/2014/01/Sample_1280x720_mp4.mp4"
+                                :src="user.video"
                                 poster="/your-path/poster.jpg"
                                 controls
                                 :loop="true"
@@ -301,18 +308,56 @@
         </div>
 
     </section>
+    <Toast />
+
+    <!-- refuse application modal  -->
+    <Dialog v-model:visible="refuseApplication" modal :style="{ width: '35vw' }">
+        <h5 class="fw-bold  text-center mb-2"> رفض الطلب </h5>
+
+        <p class="text-center">
+            الرجاء ادخال سبب رفض المقدم على الوظيفة لكي يتم مراجعة معلوماته
+        </p>
+
+        <form>
+            <textarea name="" v-model="refuseReason" id="" cols="30" rows="8" class="form-control refuse_textarea" placeholder="اكتب سبب الرفض هنا"></textarea>
+        </form>
+    
+        <div class="flex_between mt-4">
+            <button class="main_btn pt-3 pb-3  w-50" @click.prevent="rejectApplication" :disabled="acceptDisabled1"> 
+                
+                <span v-if="!acceptDisabled1"> ارسال </span>
+                <div class="spinner-border" role="status" v-if="acceptDisabled1">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+
+            </button>
+            <button class="main_btn cancel pt-3 pb-3 w-50 mx-2" @click="refuseApplication=false"> {{ $t('emp.back')  }} </button>
+        </div>
+    </Dialog>
 </template>
 
 <script>
 import Skeleton from 'primevue/skeleton';
 import { VideoPlayer } from '@videojs-player/vue'
 import 'video.js/dist/video-js.css'
+import Toast from 'primevue/toast';
+import axios from 'axios';
+import Dialog from 'primevue/dialog';
 
 export default {
     data(){
         return{
             showSkeleton : true,
-            pdfFileName: 'my-pdf-file.pdf'
+            pdfFileName: 'my-pdf-file.pdf',
+            acceptDisabled : false,
+            acceptDisabled1 : false,
+            refuseApplication : false,
+            refuseReason : ''
+        }
+    },
+    computed:{
+        user(){
+            return this.$store.state.user_profile ;
         }
     },
     methods: {
@@ -327,22 +372,82 @@ export default {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        },
+        async getUserInfo(){
+            const fd = new FormData ;
+            fd.append('user_id', this.$route.params.id);
+            await this.$store.dispatch('getUserProfile', fd);
+        },
+
+        // accept application 
+        async acceptApplication(){
+            this.acceptDisabled = true ;
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+
+            const fd = new FormData();
+            fd.append('job_application_id', this.$route.params.id);
+
+            await axios.post('company/job-applications/accept', fd , {headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.acceptDisabled = false ;
+                }else{
+                    this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                    this.acceptDisabled = false ;
+                }
+            } )
+        },
+
+        // accept application 
+        async rejectApplication(){
+            this.acceptDisabled1 = true ;
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+
+            const fd = new FormData();
+            fd.append('job_application_id', this.$route.params.id);
+            fd.append('reason', this.refuseReason);
+
+            await axios.post('company/job-applications/reject', fd , {headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.acceptDisabled1 = false ;
+                    this.refuseApplication = false ;
+                }else{
+                    this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                    this.acceptDisabled1 = false ;
+                }
+            } )
         }
     },
     components:{
         Skeleton,
-        VideoPlayer
+        VideoPlayer,
+        Toast,
+        Dialog
     },
     mounted(){
         setTimeout(() => {
             this.showSkeleton = false
         }, 1000);
+
+        this.getUserInfo();    
     }
 
 }
 </script>
 
 <style lang="scss">
+    .refuse_textarea{
+        background-color: #f3f3f3 !important;
+    }
     .file_download{
         background: #F5F5F5;
         padding:7px;

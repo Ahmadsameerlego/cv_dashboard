@@ -11,11 +11,12 @@
                 <div class="row">
                     <h5 class="fw-bold mainColor mb-3"> {{ $t('site.vision') }} </h5>
                     <div class="col-md-6">
-                        <h6 class="fw-bold mb-3">ابحث عن وظيفتك فى سيڤي برودكاست</h6>
-                        <p class="fw-6">سي ڤي برودكاست عبارة عن منصة تتيح لك عرض مؤهلاتك وخبراتك ومهاراتك للجهات الباحثة عن مرشحين للعمل لديها.</p>
+                        <p class="fw-6">
+                            {{  vision  }}
+                        </p>
                     </div>
 
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                         <h6 class="fw-bold mb-3">لماذا سي في برودكاست</h6>
                         <p class="fw-6"> يتيح سيڤي برودكاست الفرصة للباحثين عن وظائف، ميزة خاصة من خلال تسجيل مقطع فيديو يُبرز اهم النقاط في سيرتك الذاتية. </p>
                     </div>
@@ -23,7 +24,7 @@
                     <div class="col-md-12">
                         <h6 class="fw-bold mb-3">نفتح لك ابواب عالم الوظائف</h6>
                         <p class="fw-6"> يتيح لك سي ڤي برودكاست الوظائف المعلنة عبر التطبيق والتي تناسب مؤهلاتك وخبراتك ومهاراتك، وكذلك آلية للتواصل معك من قبل الجهات الباحثة عن موظفين.  </p>
-                    </div>
+                    </div> -->
 
                    
                 </div>
@@ -36,7 +37,14 @@
 
 <script>
 export default {
-
+    computed:{
+        vision(){
+            return this.$store.state.vision ;
+        }
+    },
+    created(){
+        this.$store.dispatch('getVision');
+    }
 }
 </script>
 

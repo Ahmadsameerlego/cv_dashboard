@@ -5,14 +5,14 @@
         <img :src="require('@/assets/imgs/logoWhite.png')" alt="logo">
     </div>
 
-    <section class="position-relative login_form px-5 pt-5 pb-5">
+    <section class="position-relative login_form px-5 pt-5 pb-5" style="height:fit-content">
         <h5 class="fw-bold mainColor">
             <span>حساب جديد</span>
             <img :src="require('@/assets/imgs/Waving hand.png')" class="mx-2" alt="">
         </h5>
 
 
-        <form ref="loginForm" class="flex flex-wrap gap-3 p-fluid">
+        <form  ref="register_form" @submit.prevent="regsiter" class="flex flex-wrap gap-3 p-fluid">
 
             <div class="row">
 
@@ -21,7 +21,7 @@
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> اسم المنشأة </label>
-                        <InputText type="text" class="defaultInput2" v-model="name" placeholder="الرجاء ادخال اسم المنشأة" />
+                        <InputText type="text" class="defaultInput2" v-model="name" name="name" placeholder="الرجاء ادخال اسم المنشأة" />
                         <!-- icon  -->
                         <div class="inputIcon">
                             <img :src="require('@/assets/imgs/user.svg')" alt="">
@@ -38,14 +38,14 @@
                         <div class="d-flex justify-content-start">
                             <div class="form-check d-flex align-items-center">
                                 
-                                <input class="" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" checked>
+                                <input class="" v-model="org_type" type="radio" name="type" id="exampleRadios1" value="governmental" checked>
                                 <label class="form-check-label mx-2 fw-6" for="exampleRadios1">
                                     منشأة حكومي
                                 </label>
                             </div>
                             <div class="form-check d-flex align-items-center mx-3">
                                 
-                                <input class="" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+                                <input class="" v-model="org_type" type="radio" name="type" id="exampleRadios2" value="private">
                                 <label class="form-check-label mx-2 fw-6" for="exampleRadios2">
                                     منشأة خاصة 
                                 </label>
@@ -60,7 +60,7 @@
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> نشاط المنشأة </label>
-                        <InputText type="text" class="defaultInput2" v-model="name" placeholder="الرجاء ادخال نشاط المنشأة" />
+                        <InputText type="text" class="defaultInput2" v-model="activity" name="activity" placeholder="الرجاء ادخال نشاط المنشأة" />
                         <!-- icon  -->
                         <div class="inputIcon">
                             <img :src="require('@/assets/imgs/user.svg')" alt="">
@@ -69,12 +69,12 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3" v-if="privateCompany">
                     <!-- company number  -->
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2">  رقم السجل التجاري   </label>
-                        <InputNumber v-model="value1" class="defaultInput" inputId="integeronly" placeholder=" الرجاء ادخال رقم السجل التجاري  " />
+                        <InputNumber v-model="commercial_register" name="commercial_register" class="defaultInput" inputId="integeronly" placeholder=" الرجاء ادخال رقم السجل التجاري  " />
                         <!-- icon  -->
                         <div class="inputIcon">
                             <img :src="require('@/assets/imgs/phone.svg')" alt="">
@@ -84,12 +84,12 @@
                     </div>
                 </div>
 
-                <div class="col-md-6 mb-3">
+                <div class="col-md-6 mb-3" >
                     <!-- user name  -->
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> الشخص المسئول </label>
-                        <InputText type="text" class="defaultInput2" v-model="name" placeholder="الرجاء ادخال الشخص المسئول" />
+                        <InputText type="text" class="defaultInput2" v-model="owner" name="owner" placeholder="الرجاء ادخال الشخص المسئول" />
                         <!-- icon  -->
                         <div class="inputIcon">
                             <img :src="require('@/assets/imgs/user.svg')" alt="">
@@ -100,18 +100,17 @@
 
                 <div class="col-md-6 mb-3">
                     <!-- phone  -->
-                    <div class="phone position-relative flex-auto">
+                    <div class="defaultInput phone position-relative flex-auto">
 
-                        <label for="integeronly" class="label fw-bold block mb-2"> {{ $t('auth.phone') }} </label>
-                        <InputNumber v-model="value1" class="defaultInput" inputId="integeronly" :placeholder="$t('auth.phoneDesc')" />
-
+                        <label for="integeronly" class="label fw-bold block mb-2"> {{ $t('set.phone') }} </label>
+                        <input type="number" v-model="phone" name="phone" class="form-control" :placeholder="$t('set.phonePlace')">
                         <!-- icon  -->
                         <div class="inputIcon">
                             <img :src="require('@/assets/imgs/phone.svg')" alt="">
                         </div>
 
                         <!-- select phone  -->
-                        <Dropdown v-model="selectedCity" :options="cities" optionLabel="name"  class="w-full md:w-14rem" />
+                        <Dropdown v-model="country" :options="countries" @change="setCountryCode" optionLabel="name"  class="w-full md:w-14rem" />
 
                     </div>
                 </div>
@@ -121,7 +120,7 @@
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> البريد الألكتروني </label>
-                        <InputText type="email" class="defaultInput2" v-model="name" placeholder="الرجاء ادخال البريد الألكتروني" />
+                        <InputText type="email" class="defaultInput2" v-model="email" name="email" placeholder="الرجاء ادخال البريد الألكتروني" />
                         <!-- icon  -->
                         <div class="inputIcon">
                         <img :src="require('@/assets/imgs/sms.svg')" alt="">
@@ -134,7 +133,7 @@
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> المنطقة </label>
-                        <Dropdown v-model="gender" :options="regions" optionLabel="name"  class="w-full md:w-14rem w-100 position-relative" placeholder="الرجاء تحديد المنطقة"  />
+                        <Dropdown v-model="region" :options="regions" @change="setRegionId" optionLabel="name" name="region_id" :value="region_id"  class="w-full md:w-14rem w-100 position-relative" placeholder="الرجاء تحديد المنطقة"  />
                         <!-- icon  -->
                         <div class="inputIcon">
                         <img :src="require('@/assets/imgs/sms.svg')" alt="">
@@ -148,7 +147,7 @@
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> المدينة </label>
-                        <Dropdown v-model="gender" :options="cities" optionLabel="name"  class="w-full md:w-14rem w-100 position-relative" placeholder="الرجاء تحديد المدينة"  />
+                        <Dropdown v-model="city" :options="cities" optionLabel="name" name="city_id" :value="city_id" @change="setCityId"  class="w-full md:w-14rem w-100 position-relative" placeholder="الرجاء تحديد المدينة"  />
                         <!-- icon  -->
                         <div class="inputIcon">
                         <img :src="require('@/assets/imgs/sms.svg')" alt="">
@@ -162,7 +161,7 @@
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> كلمة المرور </label>
-                        <Password v-model="oldPass"  toggleMask class="defaultInput" placeholder="الرجاء ادخال كلمة المرور" />
+                        <Password v-model="password" name="password"  toggleMask class="defaultInput" placeholder="الرجاء ادخال كلمة المرور" />
 
                         <!-- icon  -->
                         <div class="inputIcon">
@@ -178,7 +177,7 @@
                     <div class="position-relative flex-auto">
 
                         <label for="integeronly" class="label fw-bold block mb-2"> تأكيد كلمة المرور </label>
-                        <Password v-model="newPass" :feedback="false" toggleMask class="defaultInput" placeholder="الرجاء تأكيد كلمة المرور" />
+                        <Password v-model="password_confirmation" name="password_confirmation" :feedback="false" toggleMask class="defaultInput" placeholder="الرجاء تأكيد كلمة المرور" />
 
                         <!-- icon  -->
                         <div class="inputIcon">
@@ -204,14 +203,20 @@
 
             <!-- submit  -->
             <div class="mt-4">
-                <button class="main_btn w-100 pt-3 pb-3 fs-5"> {{ $t('nav.login') }} </button>
+                <button class="main_btn w-100 pt-3 pb-3 fs-5" :disabled="disabled"> 
+                    <span v-if="!disabled">{{ $t('set.register') }} </span>
+                    <div class="spinner-border" role="status" v-if="disabled">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
             </div>
 
             <!-- new account  -->
             <div class="flex_center newAcc">
-                <p class="fs-6 mt-4 fw-6"> {{ $t('auth.haveAnAcc') }} ؟  <router-link to="/register" class="mainColor fw-bold"> {{ $t('auth.register') }} </router-link> </p>  
+                <p class="fs-6 mt-4 fw-6"> {{ $t('set.haveAnAcc') }} ؟  <router-link to="/register" class="mainColor fw-bold"> {{ $t('set.login') }} </router-link> </p>  
             </div>
         </form>
+
 
 
         <!-- absolute logo  -->
@@ -226,6 +231,17 @@
         <img :src="require('@/assets/imgs/circledTop.png')" class="topCircled" alt="">
     </div>
   </section>
+
+    <!-- success modal  -->
+    <Dialog v-model:visible="successRegister" modal  :style="{ width: '35vw' }">
+        <img :src="require('@/assets/imgs/animation_llujjrlh_small.gif')" alt="" class="mx-auto d-flex">
+        <p class="text-center">
+                    تم ارسال طلبك للانضمام للاداره الرجاء الانتظار للموافقه وسيتم ارسال بيانات
+        الدخول علي الايميل الخاص بك        
+        </p>
+    </Dialog>
+  <Toast />
+
 </template>
 
 <script>
@@ -233,35 +249,122 @@ import InputNumber from 'primevue/inputnumber';
 import Dropdown from 'primevue/dropdown';
 import Password from 'primevue/password';
 import InputText from 'primevue/inputtext';
+import axios from 'axios';
+import Toast from 'primevue/toast';
+import Dialog from 'primevue/dialog';
 
 export default {
     data(){
         return{
             cities : [],
-            regions : [],
-            oldPass : null,
-            newPass : null,
+            password : null,
+            password_confirmation : null,
+            region : null,
+            region_id : null,
+            city : null,
+            city_id : null,
+            country : null,
+            privateCompany : false,
+            org_type : null,
+            phone : null,
+            commercial_register : null,
+            disabled : false,
+            successRegister : false
         }
     },
     components:{
         InputNumber,
         Dropdown,
         Password,
-        InputText
+        InputText,
+        Toast,
+        Dialog
     },
      watch:{
-        newPass(){
+        password_confirmation(){
                 // if( this.passwordMatch == true ){
                 //     this.disabled = false;
                 // }else{
                 //     this.disabled = true;
                 // }
                 this.showValid = true ;
+        },
+        org_type(){
+            if( this.org_type == 'private' ){
+                this.privateCompany = true ;
+            }else{
+                this.privateCompany = false ;
             }
+        }
     },
     computed:{
         passwordMatch() {
-            return this.oldPass === this.newPass;  
+            return this.password === this.password_confirmation;  
+        },
+        regions(){
+            return this.$store.state.regions;
+        },
+        countries(){
+            return this.$store.state.countries ;
+        },
+        response(){
+            return this.$store.getters.getRegisterResponse
+        }
+    },
+    methods:{
+        // set region id 
+        setRegionId(){
+            this.region_id = this.region.id;
+            this.getCities();
+        },
+        setCityId(){
+            this.city_id = this.city.id ;
+        }, 
+        // get cities based on region id 
+        async getCities(){
+            const fd = new FormData();
+            fd.append('region_id', this.region_id)
+            await axios.post('region/cities', fd)
+            .then( (res)=>{
+                this.cities = res.data.data;
+            } )
+        },
+        // set country code 
+        setCountryCode(){
+            document.querySelector('.phone .p-dropdown-label').innerHTML = this.country.key ;
+        },
+
+        // register 
+        async regsiter(){
+            this.disabled = true ;
+            const fd = new FormData(this.$refs.register_form);
+            fd.append( 'password', this.password );
+            fd.append('password_confirmation', this.password_confirmation);
+            fd.append('country_code', this.country.key);
+            fd.append('city_id', this.city_id);
+            fd.append('region_id', this.region_id);
+
+            if( this.privateCompany == true ){
+                fd.append('commercial_register', this.commercial_register);
+            }
+
+
+        
+
+            const response = await this.$store.dispatch('register', fd);
+            
+            if( response.success === true ){
+                this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
+                this.disabled = false ;
+                setTimeout(() => {
+                    this.successRegister = true ;
+                }, 3000);
+                // set user after register 
+                localStorage.setItem('registerUser',JSON.stringify(this.$store.state.user) )
+            }else{
+                this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
+                this.disabled = false ;
+            }
         }
     },
     mounted(){
@@ -271,6 +374,14 @@ export default {
         setTimeout(() => {
             this.$refs.logo.classList.remove('show')
         }, 3000);
+
+        // set default value for country ( saudia )
+        this.country = {id: 1, name: 'السعودية', key: '+966'};
+        document.querySelector('.phone .p-dropdown-label').innerHTML = '+966' ;
+    },
+    created(){
+        this.$store.dispatch('getRegions');
+        this.$store.dispatch('getCounntries');
     }
 }
 </script>
@@ -282,9 +393,21 @@ export default {
     input[type=radio]:checked + label{
         color:#293255
     }
+    .phone .p-dropdown{
+        width: 22%;
+        padding-right: 0 !important;
+        padding-left: 0 !important;
+    }
+    .main_btn:disabled{
+        opacity: .6;
+        cursor: not-allowed;
+    }
 </style>
 
 <style scoped lang="scss">
+    .form-control{
+        height:50px;
+    }
     #login{
         height: 180vh;
         .login_form {

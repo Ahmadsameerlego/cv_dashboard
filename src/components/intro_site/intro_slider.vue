@@ -13,27 +13,10 @@
             :modules="modules"
             :loop="true"
         >
-          <swiper-slide class="mx-2">
-            <img :src="require('@/assets/imgs/total-logo.png')" alt="">
+          <swiper-slide class="mx-2" v-for="item in parteners" :key="item">
+            <img :src="item.image" alt="partener image">
           </swiper-slide>
-          <swiper-slide class="mx-2">
-            <img :src="require('@/assets/imgs/total-logo.png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="mx-2">
-            <img :src="require('@/assets/imgs/total-logo.png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="mx-2">
-            <img :src="require('@/assets/imgs/total-logo.png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="mx-2">
-            <img :src="require('@/assets/imgs/total-logo.png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="mx-2">
-            <img :src="require('@/assets/imgs/total-logo.png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="mx-2">
-            <img :src="require('@/assets/imgs/total-logo.png')" alt="">
-          </swiper-slide>
+          
 
           
         </swiper>
@@ -55,12 +38,19 @@ export default {
       Swiper,
       SwiperSlide,
   },
-    setup() {
-    
+  computed:{
+    parteners(){
+      return this.$store.state.parteners ;
+    }
+  },
+  setup() { 
     return {
         modules: [Autoplay],
     };
   },
+  created(){
+    this.$store.dispatch('getParteners');
+  }
 
 }
 </script>
@@ -69,6 +59,9 @@ export default {
   .swiper-slide img{
     max-width: 200px;
     width: 100%;
+    height: 65px;
+    object-fit: cover;
+    background-color: white;
   }
   #partners{
     background-color: #293255;

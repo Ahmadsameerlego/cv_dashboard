@@ -1,11 +1,11 @@
 <template>
   <div class="home">
       <navBarVue />
-      <homeIntroVue />
+      <homeIntroVue  data-aos="zoom-in" data-aos-duration="1000"  data-aos-easing="ease-out-cubic"  />
       <introSliderVue/>
-      <introVisionVue />
-      <appPagesVue />
-      <appStatisticsVue />
+      <introVisionVue data-aos="zoom-in" data-aos-duration="1000"  data-aos-easing="ease-out-cubic" />
+      <appPagesVue  data-aos="fade-left" data-aos-duration="1000"  data-aos-easing="ease-out-cubic" />
+      <appStatisticsVue data-aos="fade-right" data-aos-duration="1000"  data-aos-easing="ease-out-cubic" />
   </div>
 </template>
 
@@ -16,6 +16,8 @@ import introSliderVue from '@/components/intro_site/intro_slider.vue';
 import introVisionVue from '@/components/intro_site/intro_vision.vue';
 import appPagesVue from '@/components/intro_site/app_pages.vue';
 import appStatisticsVue from '@/components/intro_site/app_statistics.vue';
+import AOS from "aos";
+
 export default {
   name: 'HomeView',
   components: {
@@ -25,6 +27,9 @@ export default {
     introVisionVue,
     appPagesVue,
     appStatisticsVue
+  },
+  mounted(){
+      AOS.init();
   }
 }
 </script>

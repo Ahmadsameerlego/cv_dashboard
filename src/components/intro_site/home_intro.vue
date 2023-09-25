@@ -5,27 +5,21 @@
             <div class="col-md-7 mb-3">
                 <div class="row">
 
-                    <div class="col-md-6">
-                        <h6 class="fw-bold mb-3">ابحث عن وظيفتك فى سيڤي برودكاست</h6>
-                        <p class="fw-6">سي ڤي برودكاست عبارة عن منصة تتيح لك عرض مؤهلاتك وخبراتك ومهاراتك للجهات الباحثة عن مرشحين للعمل لديها.</p>
+                    <div class="col-md-6" v-for="item in top" :key="item">
+                        <h6 class="fw-bold mb-3"> {{  item.title  }} </h6>
+                        <p class="fw-6">
+                            {{  item.content  }}
+                        </p>
                     </div>
 
-                    <div class="col-md-6">
-                        <h6 class="fw-bold mb-3">لماذا سي في برودكاست</h6>
-                        <p class="fw-6"> يتيح سيڤي برودكاست الفرصة للباحثين عن وظائف، ميزة خاصة من خلال تسجيل مقطع فيديو يُبرز اهم النقاط في سيرتك الذاتية. </p>
-                    </div>
-
-                    <div class="col-md-12">
-                        <h6 class="fw-bold mb-3">نفتح لك ابواب عالم الوظائف</h6>
-                        <p class="fw-6"> يتيح لك سي ڤي برودكاست الوظائف المعلنة عبر التطبيق والتي تناسب مؤهلاتك وخبراتك ومهاراتك، وكذلك آلية للتواصل معك من قبل الجهات الباحثة عن موظفين.  </p>
-                    </div>
+                    
 
                     <div class="downloadApp mt-4 d-flex align-items-center">
-                        <a href="#" class="d-flex"> 
+                        <a :href="settings.google_play_link" target="_blank" class="d-flex"> 
                             <img :src="require('@/assets/imgs/googlePlay.png')" alt="app store">
                            
                         </a>
-                        <a href="#" class="mx-3">
+                        <a :href="settings.app_store_link" target="_blank" class="mx-3">
                             <img :src="require('@/assets/imgs/appStore.png')" alt="google play">
                         </a>
                     </div>
@@ -33,7 +27,7 @@
             </div>
             <div class="col-md-5 mb-3">
                 <div class="job_image">
-                    <img class="w-100 h-100" :src="require('@/assets/imgs/downloadAppSite.png')" alt="job canvas">
+                    <img class="w-100 h-100" :src="settings.provider_intro_image" alt="job canvas">
                 </div>
             </div>
         </div>
@@ -44,7 +38,18 @@
 
 <script>
 export default {
-
+    computed:{
+        top(){
+            return this.$store.state.top ;
+        },
+        settings(){
+            return this.$store.state.settings ;
+        },
+    },
+    created(){
+        this.$store.dispatch('getTopSection');
+        this.$store.dispatch('getSettings');
+    }
 }
 </script>
 

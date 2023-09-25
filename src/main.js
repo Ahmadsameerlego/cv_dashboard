@@ -16,6 +16,8 @@ import "primevue/resources/themes/lara-light-indigo/theme.css";
     
 //core
 import "primevue/resources/primevue.min.css";
+import ToastService from 'primevue/toastservice';
+
 
 
 // import fontawesome
@@ -35,9 +37,9 @@ import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 // import axios
 import axios from 'axios';
-axios.defaults.baseURL = 'https://admin.advisersgate.com/api/';
+axios.defaults.baseURL = 'https://cvbroadcast.com/api/v1/';
 // axios.defaults.baseURL = ' https://accept.paymob.com/api/';
-// axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');   
+axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');   
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.lang = localStorage.getItem('locale');
 
@@ -53,9 +55,9 @@ import Paginate from "vuejs-paginate-next";
 // importing AOS css style globally
 import 'aos/dist/aos.css'
 
-// InfiniteLoading 
-import InfiniteLoading from "v3-infinite-loading";
-import "v3-infinite-loading/lib/style.css"; //required if you're not going to override default slots
+// // InfiniteLoading 
+// import InfiniteLoading from "v3-infinite-loading";
+// import "v3-infinite-loading/lib/style.css"; //required if you're not going to override default slots
 
 
 
@@ -90,6 +92,6 @@ createApp(App)
 
     },
 })
+.use(ToastService)
 .use(VueVideoPlayer)
-.component("infinite-loading", InfiniteLoading)
 .mount('#app')
