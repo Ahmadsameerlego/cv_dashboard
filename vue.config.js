@@ -11,5 +11,9 @@ module.exports = defineConfig({
       compositionOnly: true,
       fullInstall: true
     }
-  }
+  },
+  devServer: {
+    port: 8081, // Set your desired port number here
+  },
+
 })

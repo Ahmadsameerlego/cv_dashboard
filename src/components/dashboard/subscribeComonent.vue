@@ -20,14 +20,13 @@
 
             <!-- body  -->
             <div class="flex_between  pt-4 pb-4 px-4">
-                <span class="fs-14 normal text-center"> شهرية </span>
+                <span class="fs-14 normal text-center"> {{ currentPackage.title }} </span>
                 <span class="fs-14 text-center details"> 
-                    هذا النص هو مثال لنص يمكن أن يستبدل في نفس
-                    هذا النص هو مثال لنص يمكن أن يستبدل في نفس
+                    {{ currentPackage.description }}
                 </span>
                 <span class="fs-14 normal text-center"> ٢٨ يوم </span>
-                <span class="fs-14 normal text-center"> pending </span>
-                <span class="fs-14 normal text-center"> 16/8/2000 </span>
+                <span class="fs-14 normal text-center">  {{  subscription.status  }}  </span>
+                <span class="fs-14 normal text-center"> {{ subscription.end_date }} </span>
                 <span class="fs-14 text-center"> 
                     
                     <!-- current  -->
@@ -72,8 +71,19 @@ export default {
             pay : false 
         }
     },
+    computed:{
+        subscription(){
+            return this.$store.state.subscription ;
+        },
+        currentPackage(){
+            return this.$store.state.currentPackage ;
+        }
+    },
     components:{
         Dialog
+    },
+    created(){
+        this.$store.dispatch('getSubscription');
     }
 }
 </script>

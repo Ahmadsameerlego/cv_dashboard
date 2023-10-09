@@ -20,36 +20,44 @@
         <div class="employers orders_cards mt-3">
             
 
-            <div class="row" v-if="employees.length===0">
+            <div class="row" v-if="getAdLoad">
                 <div class="col-md-3 mb-2" v-for="skeleton in 3" :key="skeleton">
                     <Skeleton  height="6rem"></Skeleton>
                 </div>
             </div>
-            <div class="row" v-else>
-                <!-- single employer  -->
-                <div class="col-md-4 mb-3" v-for="emp in employees" :key="emp.id">
-                    <div class="single_order px-3 pt-3 pb-3">
+            <section v-else>
+                <div class="row" v-if="employees.length>0">
+                    <!-- single employer  -->
+                    <div class="col-md-4 mb-3" v-for="emp in employees" :key="emp.id">
+                        <div class="single_order px-3 pt-3 pb-3">
 
-                        <div class="d-flex align-items-center">
-                            <div class="emp_image">
-                                <img :src="emp.image" alt="">
-                            </div>
-                            <div class="mx-3">
-                                <h6 class="fw-6"> {{  emp.name  }} </h6>
-                                <div class="d-flex align-items-center">
-                                    <img :src="require('@/assets/imgs/phone1.svg')" class="phone_icon" alt="">
-                                    <span class="mx-2 fs-14"> {{  emp.phone  }} </span>
+                            <div class="d-flex align-items-center">
+                                <div class="emp_image">
+                                    <img :src="emp.image" alt="">
+                                </div>
+                                <div class="mx-3">
+                                    <h6 class="fw-6"> {{  emp.name  }} </h6>
+                                    <div class="d-flex align-items-center">
+                                        <img :src="require('@/assets/imgs/phone1.svg')" class="phone_icon" alt="">
+                                        <span class="mx-2 fs-14"> {{  emp.phone  }} </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="d-flex mt-3">
-                                <router-link :to="'/editEmp/'+emp.id" class="main_btn flex_center fw-6 w-50"> <span class="whiteColor">{{ $t('emp.edit') }}</span> </router-link>
-                                <button class="main_btn refuse w-50 mx-2" @click="deleteEmpFun(emp.id)">  {{  $t('emp.delete')  }}  </button>
-                            </div>
+                            <div class="d-flex mt-3">
+                                    <router-link :to="'/editEmp/'+emp.id" class="main_btn flex_center fw-6 w-50"> <span class="whiteColor">{{ $t('emp.edit') }}</span> </router-link>
+                                    <button class="main_btn refuse w-50 mx-2" @click="deleteEmpFun(emp.id)">  {{  $t('emp.delete')  }}  </button>
+                                </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div v-else>
+                    <Message severity="error">
+                    لا يوجد موظفين الى الان
+                    </Message>
+                </div>
+            </section>
+            
         </div>
     </section>
 
@@ -92,6 +100,8 @@
 import Dialog from 'primevue/dialog';
 import Skeleton from 'primevue/skeleton';
 import Toast from 'primevue/toast';
+import axios from 'axios';
+import Message from 'primevue/message';
 
 export default {
     data(){
@@ -99,7 +109,9 @@ export default {
             deleteEmp : false,
             successDelete : false,
             emp_id : null,
-            disabled : false
+            disabled : false,
+            getAdLoad : true,
+            employees : []
         }
     },
     methods:{
@@ -120,6 +132,7 @@ export default {
                 this.deleteEmp = false ;
                 setTimeout(() => {
                     this.successDelete = false ;
+                    this.getEmployee()
                 }, 2000);
                 
             }else{
@@ -128,21 +141,39 @@ export default {
                 
             }
             
-        }
+        },
+        // get all employees 
+        async getEmployee(){
+          const token = localStorage.getItem('token');
+          const headers = {
+            Authorization: `Bearer ${token}`,
+          };
+          await axios.get('company/employees', {headers })
+          .then( (res)=>{
+            this.employees = res.data.data ;
+            setTimeout(() => {
+              this.getAdLoad = false ;
+            }, 500);
+          } )
+        },
     },
     computed:{
-        employees(){
-            return this.$store.state.emps ;
-        }
+        // employees(){
+        //     return this.$store.state.emps ;
+        // }
     },
     components:{
         Dialog,
         Skeleton,
-        Toast
+        Toast,
+        Message
+    },
+    mounted(){
+      this.getEmployee();  
     },
     created(){
 
-        this.$store.dispatch('getAllEmps');
+        // this.$store.dispatch('getAllEmps');
     }
 }
 </script>

@@ -33,9 +33,12 @@
                                     <!-- user message  -->
                                     <div class="user_message position-relative mx-3">
                                         <!-- content  -->
-                                        <p class="mb-0"> 
+                                        <p class="mb-0" v-if="message.type=='text'"> 
                                             {{  message.body  }}
                                         </p>
+                                        <div v-else-if="message.type=='file'" style="height:200px;width:200px;">
+                                            <img :src="message.body" alt="" style="width:100%;height:100%;">
+                                        </div>
                                     </div>
                                     <!-- time  -->
                                     <span class="time grayColor">
@@ -70,7 +73,7 @@
 
                                     <div class="w-100 form-group position-relative">
                                         <textarea name="" id="" class="form-control" placeholder="اكتب رسالتك هنا" v-model="text"></textarea>
-                                        <button class="main_btn submit" @click.prevent="send"> ارسال </button>
+                                        <button class="main_btn submit" @click.prevent="addMessage"> ارسال </button>
                                     </div>
 
                                 </form>
@@ -134,6 +137,7 @@
 <script>
 // import {io} from 'socket.io-client'
 import socket from "@/plugins/socket.io";
+import axios from 'axios';
 
 export default {
     data(){
@@ -147,7 +151,7 @@ export default {
             fileChosen : null,
             user_id : null,
             avatar : null,
-            receiver_id : 501,
+            receiver_id : null,
             room_id : null,
             showLoader : false
         }
@@ -162,8 +166,51 @@ export default {
             this.text = this.$refs.file.files[0].name;
             this.type = 'file' ;
         },
+        addMessage(){
+            if( this.fileChosen !== null ){
+                // upload file
+                let formData = new FormData();
+                formData.append("file", this.file);
+                formData.append("type", this.type);
+
+                // if message uploaded is file then send it 
+                this.uploadFileEnd(formData);
+            }
+            else if (this.text.trim() == "") {
+                return false;
+            } else {
+                // send text message
+                this.send(this.text, "text");
+            }
+
+        },
+        async uploadFileEnd(formData){
+            const token = localStorage.getItem('token');
+            const headers = {
+              Authorization: `Bearer ${token}`,
+            };
+            await axios.post(`upload-room-file/${this.room_id}`, formData , {headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.fileChosen = "";
+                    this.send(
+                        res.data.data.file_name,
+                        "file",
+                        res.data.data.file_url
+                    );
+
+                }
+            } )
+        },
+
         // main method to send 
-        send(){
+        send(msg, type ,url){
+            let body = msg;
+            if (url != null) {
+                body = url;
+            }
+
+
             socket.emit("sendMessage", {
                 sender_id: JSON.parse(localStorage.getItem('user')).id,
                 sender_type: `Company`,
@@ -172,8 +219,8 @@ export default {
                 receiver_id: this.singleRoom.id,
                 receiver_type: `User`,
                 room_id: this.room_id,
-                type: this.type,
-                body: this.text,
+                type: type,
+                body: body,
                 // duration: 0,
                 // created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
             });
@@ -183,11 +230,11 @@ export default {
                 // is_sender: 1,
                 // original_message: { body: body, type: $type },
                 // avatar : this.avatar,
-                // sent_by_me: true,
-                // type: type,
-                body: this.text.trim(),
+                sent_by_me: true,
+                type: type,
+                body: body,
                 created_dt :new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
-                // fileChosen : this.fileChosen
+                fileChosen : this.fileChosen
 
             });
 
@@ -265,7 +312,7 @@ export default {
                 
         // socket = io('https://cvbroadcast.com:4730');
         console.log(socket.io)
-        socket.io.on('connect', () => {
+        socket.on('connect', () => {
           console.log('Connected to server');
         });
         socket.on('disconnect', () => {

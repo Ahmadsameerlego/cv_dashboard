@@ -6,7 +6,7 @@
   
     <section class="content px-3 pt-3">
       <!-- dashboard  -->
-      <homeViewVue :applications="applications" />
+      <homeViewVue :applications="applications" :isGet="isGet" />
     </section>
   </template>
   
@@ -18,7 +18,8 @@
   export default {
       data(){
         return{
-          applications : []
+          applications : [],
+          isGet : false
         }
       },
       components : {
@@ -35,6 +36,9 @@
           await axios.get('company/job-applications', {headers })
           .then( (res)=>{
             this.applications = res.data.data ;
+            setTimeout(() => {
+              this.isGet = true ;
+            }, 500);
           } )
         },
       },

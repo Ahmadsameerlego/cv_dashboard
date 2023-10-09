@@ -18,128 +18,148 @@
 
     <!-- طلبات التوظيف  -->
     <section class="orders_cards mt-4"  v-if="ownOrders==true">
-        <div class="row" v-if="applications.length===0">
+
+        <div class="row" v-if="load">
                 <div class="col-md-6 mb-2" v-for="skeleton in 2" :key="skeleton">
                     <Skeleton  height="6rem"></Skeleton>
                 </div>
         </div>
-        <div class="row" v-else>
-            
-            <!-- single card  -->
-            <div class="col-md-6 mb-2" v-for="ad in applications" :key="ad.id">
-                <section class="single_order pt-2 pb-2 px-2">
-                    <div class="d-flex">
-                        <!-- image  -->
-                        <div class="order_image">
-                            <img :src="ad.company.image" alt="">
-                        </div>
-                        <!-- details  -->
-                        <div class="order_details mx-3">
-                            <h6 class="fw-bold"> {{ ad.job_name }} </h6>
-                            <div class="d-flex align-items-baseline">
-                                <img :src="require('@/assets/imgs/bag.svg')" alt="">
-                                <p class="fw-6 mx-2"> {{ ad.type }} </p>
+        <section v-else>
+            <div class="row" v-if="applications.length>0">
+ 
+                <!-- single card  -->
+                <div class="col-md-6 mb-2" v-for="ad in applications" :key="ad.id">
+                    <section class="single_order pt-2 pb-2 px-2">
+                        <div class="d-flex">
+                            <!-- image  -->
+                            <div class="order_image">
+                                <img :src="ad.company.image" alt="">
                             </div>
-                            <div class="d-flex align-items-baseline">
-                                <img :src="require('@/assets/imgs/dot.svg')" alt="">
-                                <p class="fw-6 mx-2 mainColor2"> {{ ad.city  }} تبعد ١٢ كم </p>
-                            </div>
-                            <div class="d-flex align-items-baseline">
-                                <img :src="require('@/assets/imgs/people.png')" alt="">
-                                <p class="fw-6 mx-2"> {{  ad.job_applications_count  }} متقدم </p>
-                            </div>
-                        </div>
-
-                        <!-- abs values  -->
-                        <div class="abs">
-                            <!-- date  -->
-                            <div class="date d-flex align-items-center">
-                                <div class="grayColor d-flex align-items-baseline">
-                                    <img :src="require('@/assets/imgs/clock.svg')" alt="">
-                                    <p class="mx-1"> {{ $t('order.date')  }} :</p>
+                            <!-- details  -->
+                            <div class="order_details mx-3">
+                                <h6 class="fw-bold"> {{ ad.job_name }} </h6>
+                                <div class="d-flex align-items-baseline">
+                                    <img :src="require('@/assets/imgs/bag.svg')" alt="">
+                                    <p class="fw-6 mx-2"> {{ ad.type }} </p>
                                 </div>
-                                <p class="fw-6 "> {{  ad.published_at  }} </p>
+                                <div class="d-flex align-items-baseline">
+                                    <img :src="require('@/assets/imgs/dot.svg')" alt="">
+                                    <p class="fw-6 mx-2 mainColor2"> {{ ad.city  }} تبعد ١٢ كم </p>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <img :src="require('@/assets/imgs/people.png')" alt="">
+                                    <p class="fw-6 mx-2"> {{  ad.job_applications_count  }} متقدم </p>
+                                </div>
                             </div>
 
-                            <!-- more  -->
-                            <router-link :to="'/details/'+ad.id" class="more grayColor" v-if="ownOrders==true">
-                                {{ $t('order.more')  }}
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </router-link>
-                            <!-- more  -->
-                            <router-link :to="'/ownDetails/'+ad.id" class="more grayColor" v-else>
-                                {{ $t('order.more')  }}
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </router-link>
+                            <!-- abs values  -->
+                            <div class="abs">
+                                <!-- date  -->
+                                <div class="date d-flex align-items-center">
+                                    <div class="grayColor d-flex align-items-baseline">
+                                        <img :src="require('@/assets/imgs/clock.svg')" alt="">
+                                        <p class="mx-1"> {{ $t('order.date')  }} :</p>
+                                    </div>
+                                    <p class="fw-6 "> {{  ad.published_at  }} </p>
+                                </div>
+
+                                <!-- more  -->
+                                <router-link :to="'/details/'+ad.id" class="more grayColor" v-if="ownOrders==true">
+                                    {{ $t('order.more')  }}
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </router-link>
+                                <!-- more  -->
+                                <router-link :to="'/ownDetails/'+ad.id" class="more grayColor" v-else>
+                                    {{ $t('order.more')  }}
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </router-link>
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                </div>
+
             </div>
 
-        </div>
+            <div v-else>
+                <Message severity="error">
+                لا توجد طلبات توظيف الى الان
+                </Message>
+            </div>
+        </section>
+        
+
     </section>
 
     <!-- الوظائف المعلنة  -->
     <section class="orders_cards mt-4" v-else-if="ownOrders==false">
-        <div class="row" v-if="ads.length===0">
+        <div class="row" v-if="loadAd">
                 <div class="col-md-6 mb-2" v-for="skeleton in 2" :key="skeleton">
                     <Skeleton  height="6rem"></Skeleton>
                 </div>
-            </div>
-        <div class="row" v-else>
-            
-            <!-- single card  -->
-            <div class="col-md-6 mb-2" v-for="ad in ads" :key="ad.id">
-                <section class="single_order pt-2 pb-2 px-2">
-                    <div class="d-flex">
-                        <!-- image  -->
-                        <div class="order_image">
-                            <img :src="ad.company.image" alt="">
-                        </div>
-                        <!-- details  -->
-                        <div class="order_details mx-3">
-                            <h6 class="fw-bold"> {{ ad.job_name }} </h6>
-                            <div class="d-flex align-items-baseline">
-                                <img :src="require('@/assets/imgs/bag.svg')" alt="">
-                                <p class="fw-6 mx-2"> {{ ad.type }} </p>
-                            </div>
-                            <div class="d-flex align-items-baseline">
-                                <img :src="require('@/assets/imgs/dot.svg')" alt="">
-                                <p class="fw-6 mx-2 mainColor2"> الرياض تبعد ١٢ كم </p>
-                            </div>
-                            <div class="d-flex align-items-baseline">
-                                <img :src="require('@/assets/imgs/people.png')" alt="">
-                                <p class="fw-6 mx-2"> {{  ad.job_applications_count  }} متقدم </p>
-                            </div>
-                        </div>
-
-                        <!-- abs values  -->
-                        <div class="abs">
-                            <!-- date  -->
-                            <div class="date d-flex align-items-center">
-                                <div class="grayColor d-flex align-items-baseline">
-                                    <img :src="require('@/assets/imgs/clock.svg')" alt="">
-                                    <p class="mx-1"> {{ $t('order.date')  }} :</p>
-                                </div>
-                                <p class="fw-6 "> {{  ad.expire_at  }} </p>
-                            </div>
-
-                            <!-- more  -->
-                            <router-link to="/details/1" class="more grayColor" v-if="ownOrders==true">
-                                {{ $t('order.more')  }}
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </router-link>
-                            <!-- more  -->
-                            <router-link :to="'/ownDetails/'+ad.id" class="more grayColor" v-else>
-                                {{ $t('order.more')  }}
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </router-link>
-                        </div>
-                    </div>
-                </section>
-            </div>
-
         </div>
+
+        <section v-else>
+            <div class="row" v-if="ads.length>0">      
+                <!-- single card  -->
+                <div class="col-md-6 mb-2" v-for="ad in ads" :key="ad.id">
+                    <section class="single_order pt-2 pb-2 px-2">
+                        <div class="d-flex">
+                            <!-- image  -->
+                            <div class="order_image">
+                                <img :src="ad.company.image" alt="">
+                            </div>
+                            <!-- details  -->
+                            <div class="order_details mx-3">
+                                <h6 class="fw-bold"> {{ ad.job_name }} </h6>
+                                <div class="d-flex align-items-baseline">
+                                    <img :src="require('@/assets/imgs/bag.svg')" alt="">
+                                    <p class="fw-6 mx-2"> {{ ad.type }} </p>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <img :src="require('@/assets/imgs/dot.svg')" alt="">
+                                    <p class="fw-6 mx-2 mainColor2"> الرياض تبعد ١٢ كم </p>
+                                </div>
+                                <div class="d-flex align-items-baseline">
+                                    <img :src="require('@/assets/imgs/people.png')" alt="">
+                                    <p class="fw-6 mx-2"> {{  ad.job_applications_count  }} متقدم </p>
+                                </div>
+                            </div>
+
+                            <!-- abs values  -->
+                            <div class="abs">
+                                <!-- date  -->
+                                <div class="date d-flex align-items-center">
+                                    <div class="grayColor d-flex align-items-baseline">
+                                        <img :src="require('@/assets/imgs/clock.svg')" alt="">
+                                        <p class="mx-1"> {{ $t('order.date')  }} :</p>
+                                    </div>
+                                    <p class="fw-6 "> {{  ad.expire_at  }} </p>
+                                </div>
+
+                                <!-- more  -->
+                                <router-link to="/details/1" class="more grayColor" v-if="ownOrders==true">
+                                    {{ $t('order.more')  }}
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </router-link>
+                                <!-- more  -->
+                                <router-link :to="'/ownDetails/'+ad.id" class="more grayColor" v-else>
+                                    {{ $t('order.more')  }}
+                                    <i class="fa-solid fa-chevron-left"></i>
+                                </router-link>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+
+            <div v-else>
+                <Message severity="error">
+                لا توجد وظائف معلنة الى الان
+                </Message>
+            </div>
+
+        </section>
+       
     </section>
   </section>
 
@@ -193,20 +213,41 @@
 <script>
 import Dialog from 'primevue/dialog';
 import Skeleton from 'primevue/skeleton';
+import Message from 'primevue/message';
 
 export default {
     data(){
         return{
             ordersFilter : false,
-            ownOrders : null
+            ownOrders : null,
+            load : true,
+            loadAd : true 
         }
     },
     computed:{
 
     },
+    watch:{
+        isGet(){
+            if( this.isGet == true  ){
+                this.load = false ;
+            }else{
+                this.load = true ;
+            }
+        },
+        
+        getAdLoad(){
+            if( this.getAdLoad == true  ){
+                this.loadAd = false ;
+            }else{
+                this.loadAd = true ;
+            }
+        }
+    },
     components:{
         Dialog,
-        Skeleton
+        Skeleton ,
+        Message
     },
     mounted(){
         if( this.$route.fullPath.includes('settings') ){
@@ -217,7 +258,9 @@ export default {
     },
     props:{
         ads : Array,
-        applications : Array
+        applications : Array,
+        isGet : Boolean,
+        getAdLoad : Boolean
     }
 }
 </script>

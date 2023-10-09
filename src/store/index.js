@@ -54,7 +54,9 @@ export default createStore({
     top : [],
     parteners : [],
     vision : '',
-    user_profile : {}
+    user_profile : {},
+    subscription : {},
+    currentPackage : {}
   },
   getters: {
     users : state => state.users 
@@ -189,6 +191,10 @@ export default createStore({
     },
     USER_PROFILE( state , user_profile ){
       state.user_profile  = user_profile ;
+    },
+    SETSUBSCRIPTION( state , subscription ){
+      state.subscription = subscription ;
+      state.currentPackage = subscription.package 
     }
   },
   actions: {
@@ -661,6 +667,21 @@ export default createStore({
         const response = res.data.data ;
         commit('SET_VISION', response)
       } )
+    },
+    // get subscription details 
+    getSubscription({commit}){
+      const token = localStorage.getItem('token');
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      const data = {};
+      return axios.post('company/get-subscription' , data ,{headers})
+      .then( (res)=>{
+        if( res.data.key === 'success' ){
+          commit('SETSUBSCRIPTION', res.data.data);
+        }
+      } )
+
     }
   },
   modules: {

@@ -43,6 +43,28 @@ axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
 axios.defaults.headers.lang = localStorage.getItem('locale');
 
+axios.interceptors.response.use(
+    (response) => {
+      return response;
+    },
+    (error) => {
+      // Check if the error response matches the specific structure
+      if (error.response && error.response.data) {
+        const { data, key, msg } = error.response.data;
+  
+        // Check if the response matches your desired criteria
+        if (data === 'قم بتجديد الاشتراك' && key === 'success' && msg === 'تم الارسال بنجاح') {
+          // Trigger a common action here
+          console.log('Common action triggered for the specific error response.');
+  
+          // You can perform any action you want here
+          // For example, showing a modal, redirecting, or displaying a message.
+        }
+      }
+  
+      return Promise.reject(error);
+    }
+  );
 
 // import sweat alert 
 import VueSweetalert2 from 'vue-sweetalert2';
@@ -59,7 +81,7 @@ import 'aos/dist/aos.css'
 // import InfiniteLoading from "v3-infinite-loading";
 // import "v3-infinite-loading/lib/style.css"; //required if you're not going to override default slots
 
-
+  
 
 
 

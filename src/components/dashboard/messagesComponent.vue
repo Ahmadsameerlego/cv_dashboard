@@ -6,7 +6,7 @@
         </p>
         <!-- all rooms  -->
         <section class="allRooms mt-3">
-            <div class="row">
+            <div class="row" v-if="rooms.length>0">
                 <div class="col-md-9 mb-3" v-for="room in rooms" :key="room.id">
 
                     <router-link :to="'/chat/'+room.id" class="colorInherit">
@@ -41,6 +41,9 @@
                     
 
                 </div>
+            </div>
+            <div v-else class="text-center text-danger fw-6 fs-15">
+                لا توجد محادثات بعد
             </div>
         </section>
     </section>
