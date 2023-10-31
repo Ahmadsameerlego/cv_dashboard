@@ -173,7 +173,7 @@
         </router-link>
 
         <!-- single nav  -->
-        <button @click.prevent="logOut" class="btn single_nav mb-4 w-100">
+        <button @click.prevent="logOut" class="btn single_nav mb-4 w-100" :disabled="disabled">
 
             <div class="d-flex align-items-center">
                 <div class="icon flex_center">
@@ -183,6 +183,9 @@
                     </svg>
                 </div>
                 <span class="nav_title mx-3"> {{  $t('nav.logout')  }} </span>
+                <div class="spinner-border" role="status" v-if="disabled">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
             </div>
 
             <span class="arrow">
@@ -201,11 +204,12 @@ import Toast from 'primevue/toast';
 export default {
     data(){
         return{
-
+            disabled : false
         }
     },
     methods:{
         async logOut(){
+            this.disabled = true ;
             const response = await this.$store.dispatch('logOut');
             if( response.success === true ){
                 this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
@@ -215,9 +219,11 @@ export default {
                 localStorage.setItem('isAuth', false);
                 setTimeout(() => {
                     this.$router.push('/login')
-                }, 3000);
+                }, 1000);
+                this.disabled = false ;
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
+                this.disabled = false ;
             }
         }
     },
@@ -233,6 +239,8 @@ export default {
         overflow-y: auto;
         height: 100%;
         width: 300px;
+        z-index: 99;
+        background: #fff;
         .side_header{
             background-color: #293255;
             padding: 35px 20px;

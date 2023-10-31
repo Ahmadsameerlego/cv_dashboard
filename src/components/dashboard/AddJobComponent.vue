@@ -6,7 +6,7 @@
     </div>
 
     <!-- form  -->
-    <section class="addJobForm">
+    <section class="addJobForm" v-if="isSub==1">
       <form @submit.prevent="addAdvertisement" ref="addAdvsForm">
         <div class="row">
 
@@ -330,7 +330,7 @@
           </div>
 
           <!-- published_at  -->
-          <div class="col-md-6 mb-3">
+          <div class="col-md-6 mb-3 calender_date">
             <div class="position-relative flex-auto">
 
                 <label for="integeronly" class="label fw-bold block mb-2"> تاريخ بداية الاعلان </label>
@@ -345,7 +345,7 @@
           </div>
           <!-- expire_at  -->
           <div class="col-md-6 mb-3">
-            <div class="position-relative flex-auto">
+            <div class="position-relative flex-auto calender_date">
 
                 <label for="integeronly" class="label fw-bold block mb-2"> تاريخ انتهاء الاعلان </label>
                 <Calendar v-model="expire_at" name="expire_at" class="d-block" placeholder="الرجاء ادخال تاريخ انتهاء الاعلان" />
@@ -382,6 +382,14 @@
         </div>
       </form>
     </section>
+
+    <section v-else-if="isSub==0">
+      <Message severity="error">
+            قم بتجديد الاشتراك
+      </Message>
+    </section>
+
+
   </section>
 
   <Toast />
@@ -395,6 +403,7 @@ import Calendar from 'primevue/calendar';
 import Dropdown from 'primevue/dropdown';
 import MultiSelect from 'primevue/multiselect';
 import Toast from 'primevue/toast';
+import Message from 'primevue/message';
 
 import axios from 'axios';
 export default {
@@ -424,12 +433,18 @@ export default {
       genders : [
         {
           id : 1 ,
-          title : 'male',
-          
+          title : 'ذكر',
+          name : 'male'
         },
         {
           id : 2,
-          title : 'female'
+          title : 'انثى',
+          name : 'female'
+        },
+        {
+          id : 2 ,
+          title : 'ذكور أو اناث',
+          name : 'male_female'
         }
       ],
       selectedGender : null,
@@ -500,6 +515,7 @@ export default {
       ad_id : null,
       ad : {},
       company : {},
+      isSub : null
       // skills : [],
       // certifications : []
     }
@@ -535,6 +551,9 @@ export default {
                     console.error('Geocode was not successful for the following reason: ' + status)
                 }
             })
+
+            console.log(this.locations.lat)
+            console.log(this.locations.lng)
 
         },
 
@@ -605,12 +624,11 @@ export default {
             fd.append('expire_at', formattedDate)
           }
           if( this.selectedGender ){
-            fd.append('gender', this.selectedGender.title)
+            fd.append('gender', this.selectedGender.name)
           }
           for (let i = 0; i < this.selectedSkill.length; i++) {
             appendedIfSelected(fd, `skills[${i}]`, this.selectedSkill[i]);
           }
-
           for (let i = 0; i < this.selectedCert.length; i++) {
             appendedIfSelected(fd, `certifications[${i}]`, this.selectedCert[i]);
           }
@@ -619,6 +637,9 @@ export default {
           if( response.success === true ){
             this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
             this.disabled = false ;
+            setTimeout(() => {
+              this.$router.push('/settings');
+            }, 1000);
 
           }else{
             this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
@@ -656,7 +677,10 @@ export default {
               this.published_at = response.format_published_at ;
               this.selectedSkill = response.skills ;
               this.selectedCert = response.certifications ;
-              this.selectedEmp = response.category ;
+
+              // set employment here from backend 
+              this.selectedEmp = response.employment ;
+
               this.selectedQual = response.qualification ;
               this.selectedExper = response.experience ;
               this.selectedCity = response.city ;
@@ -674,10 +698,12 @@ export default {
               }
 
 
-              if( response.gender == 'male' ){
+              if( response.gender == 'male' || response.gender == 'ذكوور' ){
                 this.selectedGender = this.genders[0];
-              }else if( response.gender == 'female' ){
+              }else if( response.gender == 'female' || response.gender == 'اناث' ){
                 this.selectedGender = this.genders[1];
+              }else if( response.gender == 'ذكور/اناث' || response.gender == 'male_female'){
+                this.selectedGender = this.genders[2];
               }
               this.company = response.company;
             } )
@@ -738,7 +764,7 @@ export default {
             fd.append('expire_at', formattedDate)
           }
           if( this.selectedGender ){
-            fd.append('gender', this.selectedGender.title)
+            fd.append('gender', this.selectedGender.name)
           }
           for (let i = 0; i < this.selectedSkill.length; i++) {
             appendedIfSelected(fd, `skills[${i}]`, this.selectedSkill[i]);
@@ -754,7 +780,7 @@ export default {
             this.getAdDetails();
             setTimeout(() => {
               this.$router.push(`/ownDetails/${this.ad_id}`)
-            }, 3000);
+            }, 1000);
 
           }else{
             this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
@@ -811,7 +837,8 @@ export default {
     Calendar,
     Dropdown,
     MultiSelect,
-    Toast
+    Toast,
+    Message
   },  
   mounted(){
     this.geolocation();
@@ -825,6 +852,8 @@ export default {
       this.isAdd = true;
     }
 
+    let user = JSON.parse( localStorage.getItem('user') );
+    this.isSub = user.has_subscription ;
 
   },
   beforeMount(){
@@ -852,6 +881,11 @@ export default {
 </script>
 
 <style lang="scss">
+  .p-datepicker{
+    .p-icon{
+      transform: rotate(180deg) !important;
+    }
+  }
   #addJob{
     .p-dropdown{
       position: relative !important;

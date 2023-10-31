@@ -439,13 +439,29 @@ export default createStore({
       } )
     },
 
+  companyPhoneChange( {commit}, formData ){
+      const token = localStorage.getItem('token');
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      return axios.post('company/phone/change', formData , {headers})
+      .then( (res)=>{
+        if( res.data.key === 'success' ){
+          commit('passwordPassed', res.data.data);
+          return { success : true , message : res.data.msg }
+        }else{
+          return { success : false , message : res.data.msg }
+        }
+      } )
+  },
     // change phone password 
     changePhonePass({commit}, formData){
       const token = localStorage.getItem('token');
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      return axios.post('company/phone/change', formData , {headers})
+      return axios.post('company/password/check', formData , {headers})
       .then( (res)=>{
         if( res.data.key === 'success' ){
           commit('passwordPassed', res.data.data);
@@ -569,6 +585,22 @@ export default createStore({
       } )
 
     },
+    // edit emp 
+    editEmp( {commit}, formData ){
+      const token = localStorage.getItem('token');
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+      return axios.post('company/employees/update', formData , {headers})
+      .then( (res)=>{
+        if( res.data.key === 'success' ){
+          commit('setNewEemp', res.data.data);
+          return { success : true , message : res.data.msg }
+        }else{
+          return { success : false , message : res.data.msg }
+        }
+      } )
+    },
     // get all employees 
     getAllEmps( {commit} ){
       const token = localStorage.getItem('token');
@@ -681,6 +713,7 @@ export default createStore({
           commit('SETSUBSCRIPTION', res.data.data);
         }
       } )
+      
 
     }
   },

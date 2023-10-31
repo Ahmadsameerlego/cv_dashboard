@@ -6,7 +6,7 @@
   
     <section class="content px-3 pt-3">
       <!-- dashboard  -->
-      <homeViewVue :applications="applications" :isGet="isGet" />
+      <homeViewVue :applications="applications" :isGet="isGet" :isSub="isSub" @setAds="setNewAds" />
     </section>
   </template>
   
@@ -19,7 +19,8 @@
       data(){
         return{
           applications : [],
-          isGet : false
+          isGet : false,
+          isSub : null
         }
       },
       components : {
@@ -33,14 +34,23 @@
           const headers = {
             Authorization: `Bearer ${token}`,
           };
-          await axios.get('company/job-applications', {headers })
+          await axios.get('company/advertisements', {headers })
           .then( (res)=>{
-            this.applications = res.data.data ;
-            setTimeout(() => {
-              this.isGet = true ;
-            }, 500);
+            if( res.data.key === 'success' ){
+              this.applications = res.data.data ;
+              this.isSub = true ;
+              setTimeout(() => {
+                this.isGet = true ;
+              }, 500);
+            }else{
+              this.isSub = false ;
+            }
           } )
         },
+
+        setNewAds(value){
+          this.applications = value
+        }
       },
       mounted(){
         this.getOrders()

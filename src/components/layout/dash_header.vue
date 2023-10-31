@@ -5,11 +5,17 @@
             <div>
                 <h5 class="fw-bold mainColor">
                     <span> {{ $t('header.dash') }} </span>
-                    <img class="laughImoji" src="https://s3-alpha-sig.figma.com/img/98d1/c79e/41dcac2f20e1edb2f87601070cfc270b?Expires=1690761600&Signature=gx0v8i0QkPDLLc7YXRrJd~j64uryl0O9yhrj7AjjQT9x6f4iQWGYKsQ~LUtvsKbRf9ef8QTXFgY4cpPYQTWyLLagnhghbavp6--HyAfVFgtQvuc3JhChWLSLvx0kXHj5bUDZL1lQKku1~6sM9jNgHaQZ3UOjxUTrVzL0iuzfV4uNgAJGctdnOh~fPnowyzsr-ZW6teKWJ9ykqgVZOqMzUtIPCvImtz2rEMGpy-iVZyutnMN7S5hClJum223Jo1-kQ5tMBAJ68craFv48v3r8s69xYJoYgA6AAO0jNVj5U8llAHnW6ZSwXfJ9B-UF0qbPOQ1F~fbu0dBHMFFOS17b5w__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4" alt="">
+                    <img class="laughImoji" :src="require('@/assets/imgs/113472-happy-eye-emoji-animation.png')" alt="">
                 </h5>
                 <p class="fw-6 grayColor fs-16">
                     {{ $t('header.welcome')  }}
                 </p>
+
+                <!-- toggle icon  -->
+                <span class="toggle_bar" @click="toggle_bar" ref="toggleICon">
+                    <i class="fa-solid fa-bars"></i>
+                    <!-- <i class="fa-solid fa-x" v-else-if="open==false"></i> -->
+                </span>
             </div>
 
             <!-- left hand  -->
@@ -24,9 +30,9 @@
                 <span class="messages position-relative">
                     <router-link to="/messages">
                         <img :src="require('@/assets/imgs/dash_messgae.png')" alt="">
-                        <div class="count flex_center">
+                        <!-- <div class="count flex_center">
                             3
-                        </div>
+                        </div> -->
                     </router-link>
                 </span>
 
@@ -35,7 +41,7 @@
                     <router-link to="/notifications">
                         <img :src="require('@/assets/imgs/Group 45983.svg')" alt="">
                         <div class="count flex_center">
-                            3
+                            {{ count }}
                         </div>
                     </router-link>
                     
@@ -44,10 +50,10 @@
 
                 <!-- company info  -->
                 <div class="company_info d-flex align-items-center">
-                    <img :src="require('@/assets/imgs/logo.png')" class="logo" alt="">
+                    <img :src="image" class="logo" alt="">
                     <div class="mx-2"> 
-                        <p class="mainColor fs-16 fw-6 mb-0"> شركة اوامر الشبكة </p>
-                        <p class="grayColor fs-13 fw-6"> المدير العام </p>
+                        <p class="mainColor fs-16 fw-6 mb-0"> {{ name }} </p>
+                        <p class="grayColor fs-13 fw-6"> {{ owner }} </p>
                     </div>
                 </div>
             </div>
@@ -56,7 +62,16 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
+    data(){
+        return{
+            name : '',
+            owner : '',
+            image : '',
+            count : 0
+        }
+    },
     methods:{
         // switch lang     
         switchLang(){
@@ -75,11 +90,52 @@ export default {
 
             location.reload()
         },
+        // toggle bar 
+        toggle_bar(){
+            document.querySelector('#sidebar').classList.toggle('active');
+
+            let icon = this.$refs.toggleICon.children[0] ;
+            if( !icon.classList.contains('fa-x') ){
+                icon.classList.add('fa-x');
+            }else{
+                icon.classList.add('fa-bars');
+            }
+        },
+        // get notifications count 
+        async getNotificationCount(){
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            await axios.get('company/notifications/count', {headers})
+            .then( (res)=>{
+                if( (res.data.key === 'success') ){
+                    this.count = res.data.data.count
+                }
+            } )
+        }
+    },
+    mounted(){
+        let user = JSON.parse(localStorage.getItem('user')) ;
+        this.name = user.name ;
+        this.owner = user.owner ;
+        this.image = user.image ;
+        this.getNotificationCount();
     }
 }
 </script>
 
 <style lang="scss" scoped>
+    .toggle_bar{
+        display: none;
+        cursor: pointer;
+        position: absolute;
+        left: 35px;
+        top: 35px;
+        svg{
+            font-size: 25px;
+        }
+    }
     #header{
         width: calc(100% - 300px);
         position: fixed;

@@ -1,10 +1,10 @@
 <template>
     <section id="addEmp" class="pt-2 pb-2 px-3">
-        <h6 class="fw-bold mainColor"> صلاحيات الموظفين </h6>
+        <h6 class="fw-bold mainColor"> {{ $t('emp.access') }} </h6>
 
         <!-- add form  -->
         <section class="addForm mt-3 px-3 pt-3 pb-3">
-            <p class="fw-bold">  اضافة موظف :  </p>
+            <p class="fw-bold">  {{ $t('emp.addEmp') }} :  </p>
             <form class="addJobForm" ref="storeEmp">
                 <!-- profile pic  -->
                 <div class="pic flex_center">
@@ -18,32 +18,33 @@
                     <div class="col-md-6 mb-3">
                         <div class="form-group position-relative">
                             <img class="form_icon" :src="require('@/assets/imgs/user.svg')" alt="">
-                            <label for=""> اسم الموظف </label>
-                            <input type="text" class="form-control job_form" placeholder="ادخل اسم الموظف" name="name">
+                            <label for=""> {{ $t('emp.empName') }} </label>
+                            <input type="text" class="form-control job_form" :placeholder="$t('emp.namePlc')" name="name" v-model="name">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="form-group position-relative">
                             <img class="form_icon" :src="require('@/assets/imgs/grayPhone.svg')" alt="">
-                            <label for="">رقم التحويلة</label>
-                            <input type="number" class="form-control job_form" placeholder="ادخل رقم التحويلة" name="transfer_no">
+                            <label for="">{{ $t('emp.trans') }}</label>
+                            <input type="number" class="form-control job_form" :placeholder="$t('emp.transPlc')" name="transfer_no" v-model="transfer_no" readonly v-if="isEdit==true">
+                            <input type="number" class="form-control job_form" :placeholder="$t('emp.transPlc')" name="transfer_no" v-model="transfer_no" v-else>
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="form-group position-relative">
                             <img class="form_icon" :src="require('@/assets/imgs/lock.svg')" alt="">
-                            <label for="">كلمة المرور</label>
-                            <input type="password" class="form-control job_form" placeholder="ادخل كلمة المرور" name="password">
+                            <label for=""> {{ $t('auth.password') }} </label>
+                            <input type="password" class="form-control job_form" v-model="password" :placeholder="$t('auth.passwordPlace')" name="password">
                         </div>
                     </div>
 
                     <div class="col-md-6 mb-3">
                         <div class="form-group position-relative">
                             <img class="form_icon" :src="require('@/assets/imgs/lock.svg')" alt="">
-                            <label for="">تأكيد كلمة المرور</label>
-                            <input type="password" class="form-control job_form" placeholder="ادخل تأكيد كلمة المرور" name="password_confirmation">
+                            <label for=""> {{ $t('auth.conPass') }} </label>
+                            <input type="password" class="form-control job_form" v-model="password_confirmation" :placeholder="$t('auth.conPlc')" name="password_confirmation">
                         </div>
                     </div>
 
@@ -56,12 +57,19 @@
 
             <!-- header  -->
             <div class="flex_between border-bottom pb-2">
-                <p class="fw-6 fs-15"> الصلاحيات :  </p>
+                <p class="fw-6 fs-15"> {{ $t('emp.permissions') }} :  </p>
                 <!-- check all permissions  -->
                 <div class="grayBack px-3 pt-2 pb-2 br-3">
                     <div class="form-group align-items-center">
-                        <input type="checkbox" id="check_all_permissions" name="" class="check_all_permissions">
-                        <label for="check_all_permissions" class="fw-6 mx-2"> تحديد الكل </label>
+                        <input 
+                            type="checkbox" 
+                            id="check_all_permissions" 
+                            name="" 
+                            class="check_all_permissions"
+                            v-model="toggleAllGroupsModal"
+                            @change="toggleAllGroups"
+                        >
+                        <label for="check_all_permissions" class="fw-6 mx-2"> {{ $t('emp.selectAll') }} </label>
                     </div>  
                 </div>
             </div>
@@ -69,38 +77,38 @@
             <!-- permissions cards  -->
             <div class="row mt-3">
                 <!-- single permission card => advertisement -->
-                <div class="col-md-4 mb-2" >
+                <div class="col-md-4 mb-2">
                     <section class="single_permission br-5">
                         <div class="flex_between align-items-baseline border-bottom pb-2 pt-2 px-2">
-                        <p class="fw-6 fs-15"> {{  Object.keys( permissions )[0]  }}  </p>
-                        <!-- check all permissions  -->
-                        <div class="grayBack px-3 pt-2 pb-2 br-3">
-                            <div class="form-group align-items-center">
-                            <input type="checkbox"
-                                id="check_all"
-                                name="" 
-                                v-model="checkAll"
-                                @change="toggleAllCheckboxes()" 
-                                class="check_all_permissions"
-                            >
-                            <!-- permissions key => advertisement , company ...  -->
-                            <label for="check_all'" class="fw-6 mx-2"> تحديد الكل </label>
-                            </div>  
-                        </div>
+                            <p class="fw-6 fs-15">{{ Object.keys(permissions)[0] }}</p>
+                            <div class="grayBack px-3 pt-2 pb-2 br-3">
+                                <div class="form-group align-items-center">
+                                <input
+                                    type="checkbox"
+                                    id="check_all"
+                                    name=""
+                                    v-model="checkAll"
+                                    @change="toggleAllCheckboxes"
+                                    
+                                    class="check_all_permissions"
+                                />
+                                <label for="check_all" class="fw-6 mx-2">{{ $t('emp.selectAll') }}</label>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- permissions items  -->
                         <div class="pb-2 pt-2 px-2">
-                            <div class="form-group mb-2" v-for="perm in permissions.advertisement" :key="perm">
-                                <input 
-                                    type="checkbox" 
-                                    name="" 
-                                    v-model="checkedPermissions[perm]" 
-                                    :id="perm"
-                                    class="perm_check"
-                                >
-                                <label :for="perm" class="fw-6 mx-2"> {{  perm  }} </label>
-                            </div>
+                        <div class="form-group mb-2" v-for="perm in permissions.advertisement" :key="perm">
+                            <input
+                            type="checkbox"
+                            name=""
+                            v-model="checkedPermissions[perm]"
+                            :id="perm"
+                            :data-perm="Object.keys(permissions)[0]+':'+perm"
+                            class="perm_check perm_custom"
+                            />
+                            <label :for="perm" class="fw-6 mx-2">{{ perm }}</label>
+                        </div>
                         </div>
                     </section>
                 </div>
@@ -121,7 +129,7 @@
                                 class="check_all_permissions"
                             >
                             <!-- permissions key => advertisement , company ...  -->
-                            <label for="check_all'" class="fw-6 mx-2"> تحديد الكل </label>
+                            <label for="check_all'" class="fw-6 mx-2"> {{ $t('emp.selectAll') }} </label>
                             </div>  
                         </div>
                         </div>
@@ -134,7 +142,8 @@
                                     name="" 
                                     v-model="checkedPermissions1[perm]" 
                                     :id="perm"
-                                    class="perm_check1"
+                                    :data-perm="Object.keys(permissions)[1]+':'+perm"
+                                    class="perm_check1 perm_custom"
                                 >
                                 <label :for="perm" class="fw-6 mx-2"> {{  perm  }} </label>
                             </div>
@@ -158,7 +167,7 @@
                                 class="check_all_permissions"
                             >
                             <!-- permissions key => advertisement , company ...  -->
-                            <label for="check_all'" class="fw-6 mx-2"> تحديد الكل </label>
+                            <label for="check_all'" class="fw-6 mx-2"> {{ $t('emp.selectAll') }} </label>
                             </div>  
                         </div>
                         </div>
@@ -171,7 +180,8 @@
                                     name="" 
                                     v-model="checkedPermissions2[perm]" 
                                     :id="perm"
-                                    class="perm_check2"
+                                    :data-perm="Object.keys(permissions)[2]+':'+perm"
+                                    class="perm_check2 perm_custom"
                                 >
                                 <label :for="perm" class="fw-6 mx-2"> {{  perm  }} </label>
                             </div>
@@ -195,7 +205,7 @@
                                 class="check_all_permissions"
                             >
                             <!-- permissions key => advertisement , company ...  -->
-                            <label for="check_all'" class="fw-6 mx-2"> تحديد الكل </label>
+                            <label for="check_all'" class="fw-6 mx-2"> {{ $t('emp.selectAll') }} </label>
                             </div>  
                         </div>
                         </div>
@@ -208,7 +218,8 @@
                                     name="" 
                                     v-model="checkedPermissions3[perm]" 
                                     :id="perm"
-                                    class="perm_check3"
+                                    :data-perm="Object.keys(permissions)[3]+':'+perm"
+                                    class="perm_check3 perm_custom"
                                 >
                                 <label :for="perm" class="fw-6 mx-2"> {{  perm  }} </label>
                             </div>
@@ -221,9 +232,18 @@
         </section>
 
         <!-- save changes  -->
-        <div class="flex_center mt-3 mb-3">
+        <div class="flex_center mt-3 mb-3" v-if="isEdit==false">
             <button class="main_btn pt-2 pb-2 px-5 w-25" @click.prevent="storeEmp" :disabled="disabled"> 
-                <span v-if="!disabled">حفظ البيانات</span>
+                <span v-if="!disabled"> {{ $t('auth.saveChanges') }} </span>
+                <div class="spinner-border" role="status" v-if="disabled">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </button>
+        </div>
+        <!-- save changes  -->
+        <div class="flex_center mt-3 mb-3" v-else-if="isEdit==true">
+            <button class="main_btn pt-2 pb-2 px-5 w-25" @click.prevent="updateEmp" :disabled="disabled"> 
+                <span v-if="!disabled"> {{ $t('auth.saveChanges') }} </span>
                 <div class="spinner-border" role="status" v-if="disabled">
                     <span class="visually-hidden">Loading...</span>
                 </div>
@@ -231,15 +251,19 @@
         </div>
 
     </section>
+
     <Toast />
 </template>
 
 <script>
 import Toast from 'primevue/toast';
+import axios from 'axios';
 
 export default {
     data(){
         return{
+            password : '',
+            password_confirmation : '',
             PicImage : '',
             ifUploaded2 : true,
             disabled : false ,
@@ -252,65 +276,71 @@ export default {
             checkedPermissions2 : {},
             checkedPermissions3 : {},
 
-            checkedPerms : []
+            checkedPerms : [],
+
+            toggleAllGroupsModal : false,
+
+            employee : null,
+
+            name : '',
+            transfer_no : '',
+            isEdit : false
+
+            // permissions : []
         }
     },
     computed:{
         permissions(){
             return this.$store.state.permissions
         },
-        // convert permissions object to an array 
-        permissionsArray(){
-            return Object.entries(this.permissions).map(([key, value]) => ({
-                key,
-                value,
-            }));
-        }
+
     },
     watch:{
-
-        checkedPermissions:{
+        checkedPermissions: {
+            
             handler() {
-                // This will be triggered whenever any individual checkbox is changed.
-                // You can add your custom logic here if needed.
-                this.checkAll = Object.values(this.checkedPermissions).every((isChecked) => isChecked);
-
+                if( Object.values(this.checkedPermissions).length == this.permissions.advertisement.length  ){
+                    this.checkAll = Object.values(this.checkedPermissions).every((isChecked) => isChecked);                    
+                }
                 for (const key in this.checkedPermissions) {
                     if (this.checkedPermissions[key]) {
                         this.checkedPerms.push(`advertisement:${key}`);
                     }
                 }
+                      
                 this.checkedPerms = [...new Set(this.checkedPerms)];
-                console.log(this.checkedPerms)
 
+                console.log(this.checkedPerms)
             },
             deep: true,
         },
         checkedPermissions1:{
             handler() {
-                // This will be triggered whenever any individual checkbox is changed.
-                // You can add your custom logic here if needed.
-                this.checkAll1 = Object.values(this.checkedPermissions1).every((isChecked) => isChecked);
+                if( Object.values(this.checkedPermissions1).length == this.permissions.company.length  ){
+                    this.checkAll1 = Object.values(this.checkedPermissions1).every((isChecked) => isChecked);
+                }
                 for (const key in this.checkedPermissions1) {
                     if (this.checkedPermissions1[key]) {
                         this.checkedPerms.push(`company:${key}`);
                     }
                 }
+                
                 this.checkedPerms = [...new Set(this.checkedPerms)];
-                console.log(this.checkedPerms)
+                // console.log(this.checkedPerms)
             },
             deep: true,
         },
         checkedPermissions2:{
             handler() {
-                // This will be triggered whenever any individual checkbox is changed.
-                // You can add your custom logic here if needed.
-                this.checkAll2 = Object.values(this.checkedPermissions2).every((isChecked) => isChecked);
+                if( Object.values(this.checkedPermissions2).length == this.permissions.subscription.length  ){
+                    this.checkAll2 = Object.values(this.checkedPermissions2).every((isChecked) => isChecked);
+                }
                 for (const key in this.checkedPermissions2) {
                     if (this.checkedPermissions2[key]) {
                         this.checkedPerms.push(`subscription:${key}`);
                     }
                 }
+                
                 this.checkedPerms = [...new Set(this.checkedPerms)];
                 console.log(this.checkedPerms)
             },
@@ -318,14 +348,15 @@ export default {
         },
         checkedPermissions3:{
             handler() {
-                // This will be triggered whenever any individual checkbox is changed.
-                // You can add your custom logic here if needed.
-                this.checkAll3 = Object.values(this.checkedPermissions3).every((isChecked) => isChecked);
-                for (const key in this.checkedPermissions3) {
-                    if (this.checkedPermissions3[key]) {
-                        this.checkedPerms.push(`job_application:${key}`);
-                    }
+                if( Object.values(this.checkedPermissions3).length == this.permissions.job_application.length  ){
+                    this.checkAll3 = Object.values(this.checkedPermissions3).every((isChecked) => isChecked);
                 }
+                for (const key in this.checkedPermissions3) {
+                        if (this.checkedPermissions3[key]) {
+                            this.checkedPerms.push(`job_application:${key}`);
+                        }
+                    }
+                
                 this.checkedPerms = [...new Set(this.checkedPerms)];
                 console.log(this.checkedPerms)
             },
@@ -340,51 +371,103 @@ export default {
         },
         toggleAllCheckboxes() {
             const allCheckboxes = document.querySelectorAll('.perm_check');
-            let allChecked = true;
-
             allCheckboxes.forEach((checkbox) => {
-                checkbox.checked = this.checkAll;
-                if (!checkbox.checked) {
-                    allChecked = false;          
-                }
+                checkbox.checked = this.checkAll || false;
             });
-
-            // Update checkAll based on whether all individual checkboxes are checked
-            this.checkAll = allChecked || false; 
-
+            if( this.checkAll == true ){
+                for( let i = 0 ; i < this.permissions.advertisement.length ; i++ ){
+                    this.checkedPerms.push(`advertisement:${this.permissions.advertisement[i]}`)
+                }
+            }else if(this.checkAll == false ){
+                for( let i = 0 ; i < this.permissions.advertisement.length ; i++ ){
+                    this.checkedPerms.pop(`advertisement:${this.permissions.advertisement[i]}`)
+                }
+            }
+            
+            
+            console.log(this.checkedPerms)
         },
         toggleAllCheckboxes1() {
             const allCheckboxes = document.querySelectorAll('.perm_check1');
             allCheckboxes.forEach((checkbox) => {
                 checkbox.checked = this.checkAll1 || false;
             });
+            if( this.checkAll1 == true ){
+                for( let i = 0 ; i < this.permissions.company.length ; i++ ){
+                    this.checkedPerms.push(`company:${this.permissions.company[i]}`)
+                }
+            }else if(this.checkAll1 == false ){
+                for( let i = 0 ; i < this.permissions.company.length ; i++ ){
+                    this.checkedPerms.pop(`company:${this.permissions.company[i]}`)
+                }
+            }
+            
+            
+            console.log(this.checkedPerms)
+
         },
         toggleAllCheckboxes2() {
             const allCheckboxes = document.querySelectorAll('.perm_check2');
             allCheckboxes.forEach((checkbox) => {
                 checkbox.checked = this.checkAll2 || false;
             });
+
+            if( this.checkAll2 == true ){
+                for( let i = 0 ; i < this.permissions.subscription.length ; i++ ){
+                    this.checkedPerms.push(`subscription:${this.permissions.subscription[i]}`)
+                }
+            }else if(this.checkAll2 == false ){
+                for( let i = 0 ; i < this.permissions.subscription.length ; i++ ){
+                    this.checkedPerms.pop(`subscription:${this.permissions.subscription[i]}`)
+                }
+            }
+            
+            
+            console.log(this.checkedPerms)
         },
         toggleAllCheckboxes3() {
             const allCheckboxes = document.querySelectorAll('.perm_check3');
             allCheckboxes.forEach((checkbox) => {
             checkbox.checked = this.checkAll3 || false;
             });
+
+            if( this.checkAll3 == true ){
+                for( let i = 0 ; i < this.permissions.job_application.length ; i++ ){
+                    this.checkedPerms.push(`job_application:${this.permissions.job_application[i]}`)
+                }
+            }else if(this.checkAll3 == false ){
+                for( let i = 0 ; i < this.permissions.job_application.length ; i++ ){
+                    this.checkedPerms.pop(`job_application:${this.permissions.job_application[i]}`)
+                }
+            }
+
         },
 
-        // togglePermission(perm){
-        //     const index = this.checkedPerms.indexOf(perm);
-        //     if (index === -1) {
-        //     // If not in the array, add it
-        //     this.checkedPerms.push(perm);
-        //     } else {
-        //     // If already in the array, remove it
-        //     this.checkedPerms.splice(index, 1);
-        //     }
-
-        //     console.log(this.checkedPerms)
-
-        // },
+        //toggle check all permissions in the page 
+        toggleAllGroups(){
+            // for( let i = 0 ; i < this.permissions.advertisement.length ; i++ ){
+            //     this.checkedPerms.push(`advertisement:${this.permissions.advertisement[i]}`)
+            // }
+            // for( let i = 0 ; i < this.permissions.company.length ; i++ ){
+            //     this.checkedPerms.push(`company:${this.permissions.company[i]}`)
+            // }
+            // for( let i = 0 ; i < this.permissions.subscription.length ; i++ ){
+            //     this.checkedPerms.push(`subscription:${this.permissions.subscription[i]}`)
+            // }
+            // for( let i = 0 ; i < this.permissions.job_application.length ; i++ ){
+            //     this.checkedPerms.push(`job_application:${this.permissions.job_application[i]}`)
+            // }
+                this.checkAll = true ;
+                this.checkAll1 = true ;
+                this.checkAll2 = true ;
+                this.checkAll3 = true ; 
+                this.toggleAllCheckboxes()
+                this.toggleAllCheckboxes1()
+                this.toggleAllCheckboxes2()
+                this.toggleAllCheckboxes3()
+                            console.log(this.checkedPerms)
+ 
+        },
 
         // store employee 
         async storeEmp(){
@@ -401,7 +484,7 @@ export default {
                 this.disabled = false ;
                 setTimeout(() => {
                     this.$router.push('/access')
-                }, 3000);
+                }, 1000);
                 
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
@@ -409,10 +492,98 @@ export default {
             }
 
             console.log(fd)
+        },
+
+        // update employee 
+        async updateEmp(){
+            this.disabled = true ;
+            const fd = new FormData(this.$refs.storeEmp);
+            // if( this.PicImage ){
+            //     fd.append('image' , this.PicImage)
+            // }
+            if( this.password ){
+                fd.append('password' , this.password)
+            }
+            if( this.password_confirmation ){
+                fd.append('password_confirmation' , this.password_confirmation)
+            }
+            for( let i = 0 ; i < this.checkedPerms.length ; i++ ){
+                fd.append( `permissions[${i}]` , String(this.checkedPerms[i]) )
+            }
+            fd.append('device_type', 'web');
+            fd.append('device_id', localStorage.getItem('device_id'));
+            fd.append('employee_id', this.$route.params.id);
+
+            const response = await this.$store.dispatch('editEmp', fd);
+            if( response.success === true ){
+                this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
+                this.disabled = false ;
+                setTimeout(() => {
+                    this.getEmpDetails();
+                }, 1000);
+                
+            }else{
+                this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
+                this.disabled = false ;
+            }
+        },
+
+        // get emp details ( for emp details ) 
+        async getEmpDetails(){
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            const fd = new FormData();
+            fd.append('employee_id', this.$route.params.id)
+
+            await axios.post('company/employees/show', fd , {headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.employee = res.data.data ;
+                    this.name = res.data.data.name ;
+                    this.transfer_no = res.data.data.phone ;
+                    this.checkedPerms = res.data.data.permissions ;
+                    this.ifUploaded2 = false ;
+                    this.PicImage = res.data.data.image ;
+                    console.log(this.checkedPerms);
+                    setTimeout(() => {
+                        this.setCheckboxesBasedOnCheckedPerms()
+                    }, 500);
+                    
+                }
+            } )
+
+        },
+
+        // set checkboxes that exist in checkedPerms as checked 
+        setCheckboxesBasedOnCheckedPerms() {
+            const checkboxes = document.querySelectorAll('.perm_custom');
+        
+            this.checkedPerms.forEach((perm) => {
+                console.log(perm)
+                checkboxes.forEach((checkbox) => {
+                    console.log(checkbox.getAttribute('data-perm'))
+
+                    // Check if the data-perm attribute matches the perm
+                    if (checkbox.getAttribute('data-perm') === perm) {
+                        console.log('checked done')
+                        checkbox.checked = true;
+                    }
+                });
+            });
         }
+
+
     },
     created(){
         this.$store.dispatch('getPermissions')
+    },
+    mounted(){
+        if( this.$route.fullPath.includes('editEmp') ){
+            this.getEmpDetails();
+            this.isEdit = true ;
+        }
     },
     components:{
         Toast
@@ -425,6 +596,7 @@ export default {
         object-fit: contain;
     }
 </style>
+
 <style lang="scss">
     .addForm{
         background-color: #fff;

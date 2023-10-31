@@ -37,7 +37,7 @@ import VueGoogleMaps from '@fawmi/vue-google-maps'
 
 // import axios
 import axios from 'axios';
-axios.defaults.baseURL = 'https://cvbroadcast.com/api/v1/';
+axios.defaults.baseURL = 'https://backend.cvbroadcast.com/api/v1/';
 // axios.defaults.baseURL = ' https://accept.paymob.com/api/';
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('token');   
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';

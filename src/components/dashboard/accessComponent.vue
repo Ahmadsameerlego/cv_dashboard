@@ -10,14 +10,14 @@
                 </p>
             </div>
 
-            <router-link to="/addEmp" class="main_btn whiteColor pt-2 pb-2 fw-6">
+            <router-link to="/addEmp" class="main_btn whiteColor pt-2 pb-2 fw-6" v-if="isSub==1">
                 <i class="fa-solid fa-plus whiteColor fw-6"></i>
                 <span class="whiteColor mx-2">{{ $t('emp.add')  }}</span>
             </router-link>
         </div>
 
         <!-- employers  -->
-        <div class="employers orders_cards mt-3">
+        <div class="employers orders_cards mt-3" v-if="isSub==1">
             
 
             <div class="row" v-if="getAdLoad">
@@ -59,6 +59,16 @@
             </section>
             
         </div>
+
+
+        <section v-else-if="isSub==0">
+            <Message severity="error">
+                    قم بتجديد الاشتراك
+            </Message>
+        </section>
+
+
+
     </section>
 
         <!-- delete employee  -->
@@ -111,13 +121,16 @@ export default {
             emp_id : null,
             disabled : false,
             getAdLoad : true,
-            employees : []
+            employees : [],
+            isSub : null
         }
     },
     methods:{
         deleteEmpFun(id){
             this.deleteEmp = true;
             this.emp_id = id ;
+            console.log(id)
+            console.log(this.emp_id)
         },
         async detelte(){
             this.disabled = true ;
@@ -133,7 +146,7 @@ export default {
                 setTimeout(() => {
                     this.successDelete = false ;
                     this.getEmployee()
-                }, 2000);
+                }, 1000);
                 
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
@@ -169,7 +182,9 @@ export default {
         Message
     },
     mounted(){
-      this.getEmployee();  
+        this.getEmployee();  
+        let user = JSON.parse( localStorage.getItem('user') );
+        this.isSub = user.has_subscription ;
     },
     created(){
 

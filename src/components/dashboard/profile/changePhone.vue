@@ -20,18 +20,22 @@
 
                     </div>
                   <div class="flex_between mt-4">
-                      <button class="main_btn pt-2 pb-2  w-75 mx-auto d-flex justify-content-center" @click="send" :disabled="disabled"> حفظ التغييرات </button>
+                        <button class="main_btn pt-2 pb-2  w-75 mx-auto d-flex justify-content-center" @click="send" :disabled="disabled">
+                            حفظ التغييرات 
+                        </button>
                   </div>
               </form>
           </Dialog>
 
           <otp :openOtp="openOtp" />
+          <Toast />
   </template>
   
   <script>
   import Dialog from 'primevue/dialog';
 //   import Passw  ord from 'primevue/password';
   import Dropdown from 'primevue/dropdown';
+  import Toast from 'primevue/toast';
 
   import otp from './sendOtp.vue'
   export default {
@@ -48,7 +52,8 @@
           Dialog,
         //   Password,
           Dropdown,
-          otp
+          otp,
+          Toast
       },
       props:{
         changePhone : Boolean
@@ -76,14 +81,29 @@
         setCountryCode(){
             document.querySelector('.phone .p-dropdown-label').innerHTML = this.country.key ;
         },
-        send(){
-            localStorage.setItem('new_phone', this.phone);
-            localStorage.setItem('new_country_code', this.country.key);
+        async send(){
+            this.disabled = true ;
+            const fd = new FormData();
+            fd.append('phone', this.phone);
+            fd.append('country_code', this.country.key);
 
-            if( this.openOtp === true || this.openOtp === false ){
-                this.openOtp = !this.openOtp ;
-                this.showPhone = false ;
+            const response = await this.$store.dispatch('companyPhoneChange',fd)
+            if( response.success === true ){
+                this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
+                this.disabled = false ;
+
+                if( this.openOtp === true || this.openOtp === false ){
+                    this.openOtp = !this.openOtp ;
+                    this.showPhone = false ;
+                }
+                localStorage.setItem('new_phone', this.phone);
+                localStorage.setItem('new_country_code', this.country.key);
+
+            }else{
+                this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
+                this.disabled = false ;
             }
+            
         }
       },    
       mounted(){

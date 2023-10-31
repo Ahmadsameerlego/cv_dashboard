@@ -7,91 +7,88 @@
 
             <div class="col-md-8 mb-2">
 
-                
-
                 <Skeleton v-if="showSkeleton" width="10rem" class="mb-2"></Skeleton>
-                    <!-- single profile card => main info  -->
-                    <section class="profile_card mb-3">
-                        <!-- card header  -->
-                        <div class="card_header">
-                            <p class="header_title">{{ $t('profile.main') }}:</p>
-                        </div>
-                        <!-- card content  -->
-                        <div class="card_content pt-3">
-                            <!-- 
-                                top  
-                            -->
-                            <div class="d-flex justify-content-between align-items-center mb-4">
-                                
-                                <div class="main_info d-flex align-items-center">
-                                    <!-- profile pic  -->
-                                    <div class="profile_pic">
-                                        <img :src="require('@/assets/imgs/logo.png')" alt="profile image">
-                                    </div>
-                                    <div class="mx-2">
-                                        <p class="fw-bold fs-15 mb-1"> {{  user.name  }}  </p>
-                                        <div>
-                                            <img :src="require('@/assets/imgs/redGender.svg')" alt="">
-                                            <span class="fw-bold fs-12 mx-1"> ذكر </span>
-                                        </div>
-                                    </div>
+                <!-- single profile card => main info  -->
+                <section class="profile_card mb-3">
+                    <!-- card header  -->
+                    <div class="card_header">
+                        <p class="header_title">{{ $t('profile.main') }}:</p>
+                    </div>
+                    <!-- card content  -->
+                    <div class="card_content pt-3">
+                        <!-- 
+                            top  
+                        -->
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            
+                            <div class="main_info d-flex align-items-center">
+                                <!-- profile pic  -->
+                                <div class="profile_pic">
+                                    <img :src="require('@/assets/imgs/logo.png')" alt="profile image">
                                 </div>
-
-                                <div class="main_btn">
-                                    مطابق بنسبة 90%
+                                <div class="mx-2">
+                                    <p class="fw-bold fs-15 mb-1"> {{  user.name  }}  </p>
+                                    <div>
+                                        <img :src="require('@/assets/imgs/redGender.svg')" alt="">
+                                        <span class="fw-bold fs-12 mx-1"> ذكر </span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- bottom  -->
-                            <div class="d-flex justify-content-between flex-wrap">
+                            <!-- <div class="main_btn">
+                                مطابق بنسبة 90%
+                            </div> -->
+                        </div>
 
-                                <!-- single feature  -->
-                                <div>
-                                    <p class="grayColor fw-6 mb-1">
-                                        <img :src="require('@/assets/imgs/bluePhone.svg')" alt="">
-                                        <span class="mx-2">{{ $t('set.phone')  }} :</span>
-                                    </p>
-                                    <p class="fw-bold">
-                                        {{ user.phone }}
-                                    </p>
-                                </div>
+                        <!-- bottom  -->
+                        <div class="d-flex justify-content-between flex-wrap">
 
-                                <!-- single feature  -->
-                                <div>
-                                    <p class="grayColor fw-6 mb-1">
-                                        <img :src="require('@/assets/imgs/blueMail.svg')" alt="">
-                                        <span class="mx-2"> {{ $t('set.email')  }} :</span>
-                                    </p>
-                                    <p class="fw-bold">
-                                        {{ user.email }}
-                                    </p>
-                                </div>
+                            <!-- single feature  -->
+                            <div>
+                                <p class="grayColor fw-6 mb-1">
+                                    <img :src="require('@/assets/imgs/bluePhone.svg')" alt="">
+                                    <span class="mx-2">{{ $t('set.phone')  }} :</span>
+                                </p>
+                                <p class="fw-bold">
+                                    {{ user.phone }}
+                                </p>
+                            </div>
 
-                                <!-- single feature  -->
-                                <div>
-                                    <p class="grayColor fw-6 mb-1">
-                                        <img :src="require('@/assets/imgs/blueCalender.svg')" alt="">
-                                        <span class="mx-2"> {{ $t('profile.birthday')  }} :</span>
-                                    </p>
-                                    <p class="fw-bold">
-                                        {{ user.birth_date }}
-                                    </p>
-                                </div>
+                            <!-- single feature  -->
+                            <div>
+                                <p class="grayColor fw-6 mb-1">
+                                    <img :src="require('@/assets/imgs/blueMail.svg')" alt="">
+                                    <span class="mx-2"> {{ $t('set.email')  }} :</span>
+                                </p>
+                                <p class="fw-bold">
+                                    {{ user.email }}
+                                </p>
+                            </div>
 
-                                <!-- single feature  -->
-                                <div>
-                                    <p class="grayColor fw-6 mb-1">
-                                        <img :src="require('@/assets/imgs/blueNation.svg')" alt="">
-                                        <span class="mx-2"> {{  $t('profile.nat')  }} :</span>
-                                    </p>
-                                    <p class="fw-bold">
-                                        {{ user.nationality }}
-                                    </p>
-                                </div>
+                            <!-- single feature  -->
+                            <div>
+                                <p class="grayColor fw-6 mb-1">
+                                    <img :src="require('@/assets/imgs/blueCalender.svg')" alt="">
+                                    <span class="mx-2"> {{ $t('profile.birthday')  }} :</span>
+                                </p>
+                                <p class="fw-bold">
+                                    {{ user.birth_date }}
+                                </p>
+                            </div>
+
+                            <!-- single feature  -->
+                            <div>
+                                <p class="grayColor fw-6 mb-1">
+                                    <img :src="require('@/assets/imgs/blueNation.svg')" alt="">
+                                    <span class="mx-2"> {{  $t('profile.nat')  }} :</span>
+                                </p>
+                                <p class="fw-bold">
+                                    {{ user.nationality }}
+                                </p>
                             </div>
                         </div>
-                    </section>
-
+                    </div>
+                </section>
 
                 <!-- single profile card => location  -->
                 <section class="profile_card mb-3">
@@ -130,7 +127,6 @@
                         </div>
                     </div>
                 </section>
-
 
                 <!-- single profile card => employee info  -->
                 <section class="profile_card mb-3">
@@ -237,28 +233,26 @@
                     </div>
                 </section>
 
-
                 <!-- interaction  -->
                 <section class="profile_buttons d-flex justify-content-evenly">
 
-                    <router-link class="main_btn pt-2 px-4 pb-2 whiteColor" to="/chat/1">
+                    <router-link class="main_btn pt-2 px-4 pb-2 whiteColor" :to="'/chat/'+room_id" v-if="status=='accepted'">
                         <img :src="require('@/assets/imgs/message.svg')" alt="">
                         <span class="mx-1 whiteColor fw-6 fs-13"> الذهاب للمحاثة </span>
                     </router-link>
 
                     <!-- accept  -->
-                    <button class="btn accept whiteColor main_btn pt-2 pb-2" v-ripple :disabled="acceptDisabled" @click.prevent="acceptApplication">
+                    <button class="btn accept whiteColor main_btn pt-2 pb-2" v-ripple :disabled="acceptDisabled" @click.prevent="acceptApplication" v-if="status=='pending'">
                         <span v-if="!acceptDisabled">قبول</span>
                         <div class="spinner-border" role="status" v-if="acceptDisabled">
                             <span class="visually-hidden">Loading...</span>
                         </div>
                     </button>
                     <!-- refuse  -->
-                    <button class="btn refuse whiteColor main_btn pt-2 pb-2" v-ripple @click="refuseApplication=true">رفض</button>
+                    <button v-if="status=='pending'" class="btn refuse whiteColor main_btn pt-2 pb-2" v-ripple @click="refuseApplication=true">رفض</button>
                 </section>
 
             </div>
-
 
             <div class="col-md-4 mb-2">
                 <!-- single profile card => files uploaded  -->
@@ -352,7 +346,9 @@ export default {
             acceptDisabled : false,
             acceptDisabled1 : false,
             refuseApplication : false,
-            refuseReason : ''
+            refuseReason : '',
+            status : '',
+            room_id : ''
         }
     },
     computed:{
@@ -361,6 +357,24 @@ export default {
         }
     },
     methods: {
+        // get status 
+        async getJobStatus(){
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            const fd = new FormData();
+            fd.append('job_application_id', localStorage.getItem('job_app_id'));
+
+            await axios.post('company/job-applications/status', fd , {headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    console.log(res.data.data)
+                    this.status = res.data.data.status ;
+                    this.room_id = res.data.data.room_id ;
+                }
+            } )
+        },
         downloadPDF(url) {
             // create element <a> for download PDF
             const link = document.createElement('a');
@@ -388,13 +402,14 @@ export default {
             };
 
             const fd = new FormData();
-            fd.append('job_application_id', this.$route.params.id);
+            fd.append('job_application_id', localStorage.getItem('job_app_id'));
 
             await axios.post('company/job-applications/accept', fd , {headers})
             .then( (res)=>{
                 if( res.data.key === 'success' ){
                     this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
                     this.acceptDisabled = false ;
+                    this.getJobStatus();
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                     this.acceptDisabled = false ;
@@ -402,8 +417,8 @@ export default {
             } )
         },
 
-        // accept application 
-        async rejectApplication(){
+        // reject application 
+        async rejectApplication(){  
             this.acceptDisabled1 = true ;
             const token = localStorage.getItem('token');
             const headers = {
@@ -411,7 +426,7 @@ export default {
             };
 
             const fd = new FormData();
-            fd.append('job_application_id', this.$route.params.id);
+            fd.append('job_application_id', localStorage.getItem('job_app_id'));
             fd.append('reason', this.refuseReason);
 
             await axios.post('company/job-applications/reject', fd , {headers})
@@ -420,6 +435,7 @@ export default {
                     this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
                     this.acceptDisabled1 = false ;
                     this.refuseApplication = false ;
+                    this.getUserInfo();
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                     this.acceptDisabled1 = false ;
@@ -438,7 +454,8 @@ export default {
             this.showSkeleton = false
         }, 1000);
 
-        this.getUserInfo();    
+        this.getUserInfo();   
+        this.getJobStatus(); 
     }
 
 }

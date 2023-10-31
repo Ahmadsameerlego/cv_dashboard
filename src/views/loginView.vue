@@ -158,7 +158,7 @@ export default {
                     }else{
                         this.$router.push('/dashboard');
                     }
-                }, 3000);
+                }, 1000);
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
                 this.disabled = false ;
@@ -172,7 +172,7 @@ export default {
         setTimeout(() => {
             this.$refs.logo.classList.remove('show');
             this.$refs.form.classList.add('active');
-        }, 3000);
+        }, 1000);
 
         // fake device id 
         fetch('https://api.ipify.org?format=json')

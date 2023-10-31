@@ -218,8 +218,8 @@ export default {
         async updateProfile(){
             const fd = new FormData(this.$refs.profileForm);
             fd.append('type', this.type);
-            fd.append('city_id', this.city_id);
-            fd.append('region_id', this.region_id);
+            fd.append('city_id', JSON.parse((localStorage.getItem('profile'))).city.id);
+            fd.append('region_id', JSON.parse((localStorage.getItem('profile'))).region.id);
             fd.append('company_id', JSON.parse((localStorage.getItem('profile'))).id);
             this.disabled = true ;
             const response = await this.$store.dispatch('updateProfile', fd);
@@ -290,6 +290,8 @@ export default {
         this.region_id = this.$store.state.region_id;
         this.city = this.$store.state.city;
         this.city_id = this.$store.state.city_id;
+        console.log(this.city_id)
+        console.log(this.region_id)
     },
     created(){
         this.$store.dispatch('getCompanyProfile');

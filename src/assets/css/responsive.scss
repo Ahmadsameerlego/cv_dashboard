@@ -11,5 +11,14 @@
         width: calc(100%);
         margin-right: 0px;
     }
-    
+    .toggle_bar{
+        display: block !important;
+    }
+    #sidebar{
+        transition: .3s all;
+        transform: translateX(100%);
+        &.active{
+            transform: translateX(0%) !important;
+        }
+    }
 }

@@ -72,10 +72,14 @@
                         </div>
 
                         <div class="col-md-6 mb-3">
-                            <div class="form-group position-relative">
-                                <img class="form_icon" :src="require('@/assets/imgs/grayPhone.svg')" alt="">
+                            <div class="form-group position-relative phone">
+                                <img class="form_icon" :src="require('@/assets/imgs/grayPhone.svg')" alt="" style="    object-fit: contain;">
                                 <label for=""> {{ $t('set.phone')  }} </label>
                                 <input type="tel" v-model="phone" name="phone" class="form-control job_form" :placeholder="$t('set.phonePlace')">
+
+                                <!-- select phone  -->
+                                <Dropdown v-model="country" :options="countries" optionLabel="key"  @change="setCountryCode" class="w-full md:w-14rem" style="top: 27px;height: 45px !important;" />
+
                             </div>
                         </div>  
                         
@@ -103,6 +107,7 @@
 <script>
 import Toast from 'primevue/toast';
 import Skeleton from 'primevue/skeleton';
+import Dropdown from 'primevue/dropdown';
 
 export default {
     data(){
@@ -111,22 +116,35 @@ export default {
             phone : null,
             complaint : null,
             disabled : false,
-            showLoader : true
+            showLoader : true,
+            country : null
         }
     },
     computed:{
         settings(){
             return this.$store.state.settings ;
-        }      
+        } ,
+        countries(){
+            return this.$store.state.countries ;
+        }, 
     },
     components:{
         Toast,
-        Skeleton
-
+        Skeleton,
+        Dropdown
     },
     methods:{
+         // set country code 
+         setCountryCode(){
+            document.querySelector('.phone .p-dropdown-label').innerHTML = this.country.key.replace('+', '') ;
+        },
         async contactUs(){
             const fd = new FormData(this.$refs.contact_us);
+
+            
+            fd.append('country_code', this.country.key.replace('+', ''));
+
+
             this.disabled = true ;
             const response = await this.$store.dispatch('contactUs', fd);
             if( response.success === true ){
@@ -141,11 +159,15 @@ export default {
             }
         }
     },
+    mounted(){
+        this.country = {id: 1, name: 'السعودية', key: '+966'};
+    },
     created(){
         setTimeout(() => {
             this.showLoader = false ;
         }, 500);
         this.$store.dispatch('getSettings');
+        this.$store.dispatch('getCounntries');
     }
 }
 </script>

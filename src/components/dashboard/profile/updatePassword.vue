@@ -100,7 +100,7 @@ export default {
         async updatePassword(){
             const fd = new FormData();
             this.disabled = true ;
-            fd.append('passowrd', this.password);
+            fd.append('password', this.password);
             fd.append('password_confirmation', this.password_confirmation);
             fd.append('code', localStorage.getItem('passOtp'));
             fd.append('phone', JSON.parse(localStorage.getItem('profile')).phone);
@@ -113,7 +113,7 @@ export default {
                 this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
                 this.disabled = false ;
                 
-                
+                this.showPass = false ;
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
                 this.disabled = false ;

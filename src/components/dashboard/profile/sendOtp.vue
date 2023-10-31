@@ -59,13 +59,14 @@
 
         </form>
     </Dialog>
-
-
+    <Toast />
 </template>
 
 <script>
 import Dialog from 'primevue/dialog';
 // reset passwrod component 
+import Toast from 'primevue/toast';
+
 export default {
     data(){
         return{
@@ -79,6 +80,7 @@ export default {
     },
     components:{
         Dialog,
+        Toast
     },
     watch:{
         openOtp(){

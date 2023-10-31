@@ -213,7 +213,7 @@
 
             <!-- new account  -->
             <div class="flex_center newAcc">
-                <p class="fs-6 mt-4 fw-6"> {{ $t('set.haveAnAcc') }} ؟  <router-link to="/register" class="mainColor fw-bold"> {{ $t('set.login') }} </router-link> </p>  
+                <p class="fs-6 mt-4 fw-6"> {{ $t('set.haveAnAcc') }} ؟  <router-link to="/login" class="mainColor fw-bold"> {{ $t('set.login') }} </router-link> </p>  
             </div>
         </form>
 
@@ -231,6 +231,69 @@
         <img :src="require('@/assets/imgs/circledTop.png')" class="topCircled" alt="">
     </div>
   </section>
+
+  <Dialog v-model:visible="otp" modal :style="{ width: '50vw' }">
+        <h5 class="fw-bold text-center"> {{  $t('auth.otp')  }} </h5>
+        <p class=" text-center"> {{  $t('auth.otpPlc')  }} </p>
+        <div class="logo d-flex justify-content-center mx-auto mb-3">
+            <img :src="require('@/assets/imgs/forget2.svg')" alt="">
+        </div>
+
+        <form ref="loginForm" @submit.prevent="sendOtp" class="flex flex-wrap gap-3 p-fluid">
+
+            <!-- otp  -->
+            <div class="position-relative flex-auto">
+                <div
+                    style="
+                    display: flex;
+                    flex-direction: row;
+                    justify-content: space-evenly;
+                    "
+                >
+                    <v-otp-input
+                        ref="otpInput"
+                        v-model:value="code"
+                        name="code"
+                        input-classes="otp-input"
+                        separator=""
+                        :num-inputs="4"
+                        :should-auto-focus="true"
+                        input-type="numeric"
+                        class="flex-row-reverse"
+                        @input="checkCode"
+                        autofocus
+                    />
+                </div>
+
+                
+            </div>
+
+
+
+            <!-- submit  -->
+            <div class="mt-4">
+                <button class="main_btn  pt-3 pb-3 fs-5 w-75 mx-auto flex_center" :disabled="disabled2"> 
+                    <span  v-if="!disabled2">{{ $t('auth.confirm')  }} </span>
+                    <div class="spinner-border" role="status" v-if="disabled2">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </button>
+            </div>
+
+
+            <!-- <div class="flex_between w-75 mx-auto d-flex">
+                <div class="flex_center newAcc">
+                    <p class="fs-6 mt-4 fw-6"> {{ $t('auth.haveNot') }} <button type="button" class="mainColor fw-bold btn p-0" @click.prevent="resendCode"> {{ $t('auth.resend') }} </button> </p>  
+                </div>
+                <div  v-if="showResend">
+                    <p v-if="timer > 0" class="text-center mt-3">{{ $t('auth.remain')  }}  <span class="mainColor">{{ timer }} {{ $t('auth.second') }}</span> </p>
+                </div>
+                
+            </div> -->
+
+        </form>
+    </Dialog>
+
 
     <!-- success modal  -->
     <Dialog v-model:visible="successRegister" modal  :style="{ width: '35vw' }">
@@ -269,7 +332,14 @@ export default {
             phone : null,
             commercial_register : null,
             disabled : false,
-            successRegister : false
+            successRegister : false,
+            otp : false,
+            disabled2 : false,
+            timer: 4,
+            intervalId: null,
+            openReset : false,
+            code : '',
+            showResend : false
         }
     },
     components:{
@@ -334,6 +404,63 @@ export default {
             document.querySelector('.phone .p-dropdown-label').innerHTML = this.country.key ;
         },
 
+        startTimer() {
+            this.intervalId = setInterval(() => {
+                if (this.timer > 0) {
+                this.timer--;
+                } else {
+                clearInterval(this.intervalId);
+                this.disabled = false
+                }
+            }, 1000);
+        },
+
+         // submit otp form 
+         async sendOtp(){
+            const fd = new FormData();
+            this.disabled2 = true ;
+            fd.append('code', this.code);
+            fd.append('phone', this.phone);
+            fd.append('country_code', this.country.key);
+            fd.append('device_type', 'web');
+            fd.append('device_id', localStorage.getItem('device_id'));
+
+            await axios.post('company/active', fd)
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.disabled2 = false ;
+                    this.showResend = true ;
+                    setTimeout(() => {
+                        this.otp = false ;
+                        this.successRegister = true ;
+                        this.startTimer();                   
+                    }, 1000);
+                }else{
+                    this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                    this.disabled2 = false ;
+                }
+                
+            } )
+        },
+
+        // resend code 
+        async resendCode(){
+            const fd = new FormData ;
+            fd.append('phone', this.phone);
+            fd.append('country_code', this.country.key);
+
+            await axios.post('company/code/resend', fd)
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                }else{
+                    this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                }
+            } ) 
+        },
+
+
         // register 
         async regsiter(){
             this.disabled = true ;
@@ -357,15 +484,21 @@ export default {
                 this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
                 this.disabled = false ;
                 setTimeout(() => {
-                    this.successRegister = true ;
-                }, 3000);
+                    this.otp = true ;
+                }, 1000);
                 // set user after register 
                 localStorage.setItem('registerUser',JSON.stringify(this.$store.state.user) )
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
                 this.disabled = false ;
             }
-        }
+        },
+
+
+
+    },
+    beforeUnmount() {
+        clearInterval(this.intervalId);
     },
     mounted(){
         setTimeout(() => {

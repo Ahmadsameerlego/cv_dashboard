@@ -326,9 +326,10 @@ export default {
           formData.append(key , selectedValue.id)
         }
       }
-
-      fd.append('job_name', this.job_name);
-
+      if( this.job_name !== '' ){
+        fd.append('job_name', this.job_name);
+      }
+      
       appendedIfSelected(fd, 'filters[employment_id]', this.selectedEmp);
       appendedIfSelected(fd, 'filters[category_id]', this.selectedActivity);
       appendedIfSelected(fd, 'filters[qualification_id]', this.selectedQual);

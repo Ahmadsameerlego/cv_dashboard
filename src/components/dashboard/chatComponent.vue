@@ -25,13 +25,16 @@
                             <div class="chat_messages pt-4 pb-4 px-3" ref="chatSection" @scroll="handleScroll">
 
                                 <!-- single message => sent by me  -->
-                                <div class="single_message position-relative mb-3 sent_by_me d-flex align-items-center" v-for="message in messages" :key="message.id">
+                                <div class="single_message position-relative mb-3  d-flex align-items-center" :class="{sent_by_me: message.is_sender == 1, received : message.is_sender == 0}" v-for="message in messages" :key="message.id">
                                     <!-- user image  -->
-                                    <div class="user_image br-50">
-                                        <img :src="require('@/assets/imgs/logo.png')" class="br-50" alt="user image">
+                                    <div class="user_image br-50" v-if="message.is_sender == 0">
+                                        <img :src="singleRoom.image" class="br-50" alt="user image">
+                                    </div>
+                                    <div class="user_image br-50" v-if="message.is_sender == 1">
+                                        <img :src="sender_image" class="br-50" alt="user image">
                                     </div>
                                     <!-- user message  -->
-                                    <div class="user_message position-relative mx-3">
+                                    <div class="user_message position-relative mx-3" :class="{imaged : message.type=='file'}">
                                         <!-- content  -->
                                         <p class="mb-0" v-if="message.type=='text'"> 
                                             {{  message.body  }}
@@ -73,7 +76,12 @@
 
                                     <div class="w-100 form-group position-relative">
                                         <textarea name="" id="" class="form-control" placeholder="اكتب رسالتك هنا" v-model="text"></textarea>
-                                        <button class="main_btn submit" @click.prevent="addMessage"> ارسال </button>
+                                        <button class="main_btn submit" @click.prevent="addMessage" :disabled="disabled">
+                                             <span v-if="!disabled">ارسال</span> 
+                                             <div class="spinner-border" role="status" v-if="disabled">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                        </button>
                                     </div>
 
                                 </form>
@@ -111,7 +119,7 @@
 
                                         <!-- unreadCounter  -->
                                         <div class="unread_count br-50 flex_center whiteColor">
-                                            2
+                                            {{room.messages_count}}
                                         </div>
 
                                         <!-- time  -->
@@ -142,6 +150,7 @@ import axios from 'axios';
 export default {
     data(){
         return{
+            disabled : false ,
             page : 1,
             socket : null,
             text : null,
@@ -153,7 +162,9 @@ export default {
             avatar : null,
             receiver_id : null,
             room_id : null,
-            showLoader : false
+            showLoader : false,
+            sender_image : '',
+            unSeenCount : ''
         }
     },
     components:{
@@ -166,6 +177,7 @@ export default {
             this.text = this.$refs.file.files[0].name;
             this.type = 'file' ;
         },
+        // main send method 
         addMessage(){
             if( this.fileChosen !== null ){
                 // upload file
@@ -184,6 +196,7 @@ export default {
             }
 
         },
+        // upload file 
         async uploadFileEnd(formData){
             const token = localStorage.getItem('token');
             const headers = {
@@ -202,15 +215,14 @@ export default {
                 }
             } )
         },
-
-        // main method to send 
+        // argument send method 
         send(msg, type ,url){
             let body = msg;
             if (url != null) {
                 body = url;
             }
 
-
+            this.disabled = true ;
             socket.emit("sendMessage", {
                 sender_id: JSON.parse(localStorage.getItem('user')).id,
                 sender_type: `Company`,
@@ -218,7 +230,7 @@ export default {
                 avater: this.avatar,
                 receiver_id: this.singleRoom.id,
                 receiver_type: `User`,
-                room_id: this.room_id,
+                room_id: this.$route.params.id,
                 type: type,
                 body: body,
                 // duration: 0,
@@ -227,7 +239,7 @@ export default {
 
             this.messages.push({
                 // created_at: date,
-                // is_sender: 1,
+                is_sender: 1,
                 // original_message: { body: body, type: $type },
                 // avatar : this.avatar,
                 sent_by_me: true,
@@ -242,6 +254,9 @@ export default {
             this.$nextTick(() => {
                 this.scrollToBottom();
             });
+            setTimeout(() => {
+                this.disabled = false ;
+            }, 700);
             this.$store.dispatch('getchatRooms');
 
         },
@@ -269,6 +284,11 @@ export default {
 
             this.room_id = room_id ;
             console.log(this.room_id)
+            console.log(this.receiver_id)
+            console.log(this.user_id)
+
+            this.$router.push(`/chat/${room_id}`);
+            this.getUnReadMessages();
             
         },
         // handle scroll 
@@ -279,6 +299,17 @@ export default {
                 // this.showLoader = true ;
                 console.log('fff')
             }
+        },
+        // get unread sent messages count 
+        async getUnReadMessages(){
+            const token = localStorage.getItem('token');
+            const headers = {
+              Authorization: `Bearer ${token}`,
+            };
+            await axios.get(`get-room-unseen-messages/${this.$route.params.id}`, {headers})
+            .then( (res)=>{
+                this.unSeenCount = res.data.data ;
+            } )
         }
     },
     computed:{
@@ -305,9 +336,16 @@ export default {
             }
         }
     },
-    // mounted(){
-    //     window.addEventListener('scroll', this.handleScroll)
-    // },
+    beforeMount(){
+        // this.reRenderMessages();
+    },
+    mounted(){
+        // window.addEventListener('scroll', this.handleScroll)
+        // console.log(this.receiver_id)
+        // console.log(this.user_id)
+        // console.log(this.room_id)
+        this.getUnReadMessages();
+    },
     created(){
                 
         // socket = io('https://cvbroadcast.com:4730');
@@ -328,6 +366,7 @@ export default {
             user_type: `Company`,
             room_id: this.$route.params.id,
         });
+        this.sender_image = JSON.parse(localStorage.getItem('user')).image ;
 
         this.$store.dispatch('getchatRooms');
         
@@ -357,6 +396,16 @@ export default {
 </script>
 
 <style lang="scss">
+.spinner-border{
+    width:20px !important;
+    height: 20px !important;
+}
+.received{
+    flex-direction: row-reverse;
+    .user_message{
+        background-color: #e2eaf3 !important;
+    }
+}
 .p-speeddial{
     position:absolute;
     left: 50px;
@@ -481,6 +530,9 @@ export default {
             max-height: 70px;
             overflow-y: auto;
             overflow-x:hidden ;
+            &.imaged{
+                max-height: fit-content;
+            }
             p{
                 color:#5A5B5B;
                 font-size: 14px;

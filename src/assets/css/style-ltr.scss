@@ -51,5 +51,17 @@ body.ltr{
     .orders_cards .single_order .abs .date, .orders_cards .single_order .abs .more {
         left: auto;
         right: 20px;
-    }    
+    }  
+    .toggle_bar[data-v-7c48b7f6] {
+        right: 35px;
+        left: auto;
+    }
+    
+      
+
+    @media( max-width:768px ){
+        #sidebar {
+            transform: translateX(-100%);
+        }
+    }
 }

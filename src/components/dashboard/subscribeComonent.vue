@@ -30,11 +30,11 @@
                 <span class="fs-14 text-center"> 
                     
                     <!-- current  -->
-                    <!-- <div class="current whiteColor fw-6 fs-14 px-5 pt-2 pb-2 br-3">
+                    <div class="current whiteColor fw-6 fs-14 px-5 pt-2 pb-2 br-3" v-if="isSub==1">
                         {{ $t('sub.current')  }}
-                    </div> -->
+                    </div>
                     <!-- new  -->
-                    <button class="main_btn fw-6 fs-14 px-5 pt-2 pb-2 br-3" @click="pay=true">
+                    <button class="main_btn fw-6 fs-14 px-5 pt-2 pb-2 br-3" @click="updateSub" :disabled="disabled"  v-if="isSub==0">
                         {{  $t('sub.renew')  }}
                     </button>
                 </span>
@@ -59,31 +59,85 @@
             <button class="main_btn pt-2 pb-2  w-50" @click="detelte"> {{  $t('sub.payNow')  }} </button>
         </div>
     </Dialog>
-
+    <Toast />
 </template>
 
 <script>
 import Dialog from 'primevue/dialog';
+import axios from 'axios';
+import Toast from 'primevue/toast';
 
 export default {
     data(){
         return{
-            pay : false 
+            pay : false ,
+            isSub : false,
+            disabled : false,
+            subscription : {},
+            currentPackage : {}
         }
     },
     computed:{
-        subscription(){
-            return this.$store.state.subscription ;
+        // subscription(){
+        //     return this.$store.state.subscription ;
+        // },
+        // currentPackage(){
+        //     return this.$store.state.currentPackage ;
+        // }
+    },
+    methods:{
+        async updateSub(){
+            this.disabled = true ;
+            const token = localStorage.getItem('token');
+            const headers = {
+              Authorization: `Bearer ${token}`,
+            };
+            const fd = new FormData();
+            await axios.post('company/subscription/update', fd,{headers})
+            .then( (res)=>{
+                if( res.data.key === 'successs' ){
+                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.disabled = false ;
+                }else{
+                    this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                    this.disabled = false ;
+                }
+            } )
+            
         },
-        currentPackage(){
-            return this.$store.state.currentPackage ;
+
+        getSubscription(){
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            const data = {};
+            return axios.post('company/get-subscription' , data ,{headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.subscription = res.data.data ;
+                    this.currentPackage = res.data.data.package ;
+                }
+            } )
+            .catch( (err)=>{
+                this.$toast.add({ severity: 'error', summary: err, life: 3000 });
+            } )
+
+            
+
         }
     },
     components:{
-        Dialog
+        Dialog,
+        Toast
+    },
+    mounted(){
+        let profile = JSON.parse(localStorage.getItem('profile'));
+        this.isSub = profile.has_subscription ;
     },
     created(){
-        this.$store.dispatch('getSubscription');
+        // this.$store.dispatch('getSubscription');
+        this.getSubscription();
     }
 }
 </script>

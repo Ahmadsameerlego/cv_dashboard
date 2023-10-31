@@ -8,9 +8,9 @@
       <!-- dashboard  -->
       <homeViewVue />
     </section>
-  </template>
+</template>
   
-  <script>
+<script>
   import sideBarVue from '@/components/layout/sideBar.vue';
   import dashHeaderVue from '@/components/layout/dash_header.vue';
   import homeViewVue from '@/components/dashboard/AddEmpComponent.vue';
@@ -21,8 +21,8 @@
           homeViewVue
       }
   }
-  </script>
+</script>
   
-  <style>
+<style>
       
-  </style>
+</style>
