@@ -227,11 +227,12 @@ export default {
             if( response.success === true ){
                 this.$toast.add({ severity: 'success', summary: response.message, life: 3000 });
                 this.disabled = false ;
-                // if( this.changePhone === true || this.changePhone === false ){
-                //     this.changePhone = !this.changePhone ;
-                //     this.showPass = false ;
                 this.$store.dispatch('getCompanyProfile');
-                // }
+
+                localStorage.setItem('profile', this.profile );
+                setTimeout(() => {
+                    location.reload();
+                }, 1000);
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
                 this.disabled = false ;

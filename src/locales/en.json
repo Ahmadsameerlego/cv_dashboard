@@ -43,7 +43,11 @@
         "appliers" : "Appliers for the company",
         "rateDesc" : "Average match rate for hired applicants.",
         "avr" : "Average",
-        "applyOn" : "Appliers for Advertisment number : "
+        "applyOn" : "Appliers for Advertisment number : ",
+        "ad" : "Advertisment",
+        "company" : "Company",
+        "job_add" : "job Application",
+        "sub" : "Subscription"
     },
     "search": {
         "search": "Search",

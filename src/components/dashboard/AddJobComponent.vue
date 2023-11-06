@@ -190,7 +190,8 @@
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
               <label for=""> {{  $t('job.res')  }} </label>
-              <input type="text" class="form-control job_form" :placeholder="$t('job.resPlace')" name="tasks" v-model="tasks">
+              <!-- <input type="text" class="form-control job_form" :placeholder="$t('job.resPlace')" name="tasks" v-model="tasks"> -->
+              <textarea name="tasks" id="" cols="30" class="form-control job_form" :placeholder="$t('job.resPlace')"   v-model="tasks"></textarea>
             </div>
           </div>
 
@@ -325,7 +326,8 @@
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <label for=""> {{ $t('job.conditions') }} </label>
-              <input type="text" class="form-control job_form" :placeholder="$t('job.conPlace')" v-model="conditions" name="conditions">
+              <!-- <input type="text" class="form-control job_form" :placeholder="$t('job.conPlace')" v-model="conditions" name="conditions"> -->
+              <textarea name="conditions" v-model="conditions" id="" cols="30" :placeholder="$t('job.conPlace')" class="form-control job_form" ></textarea>
             </div>
           </div>
 

@@ -80,7 +80,7 @@
                 <div class="col-md-4 mb-2">
                     <section class="single_permission br-5">
                         <div class="flex_between align-items-baseline border-bottom pb-2 pt-2 px-2">
-                            <p class="fw-6 fs-15">{{ Object.keys(permissions)[0] }}</p>
+                            <p class="fw-6 fs-15"> {{ $t('home.ad') }} </p>
                             <div class="grayBack px-3 pt-2 pb-2 br-3">
                                 <div class="form-group align-items-center">
                                 <input
@@ -117,7 +117,7 @@
                 <div class="col-md-4 mb-2" >
                     <section class="single_permission br-5">
                         <div class="flex_between align-items-baseline border-bottom pb-2 pt-2 px-2">
-                        <p class="fw-6 fs-15"> {{  Object.keys( permissions )[1]  }}  </p>
+                        <p class="fw-6 fs-15"> {{  $t('home.company')  }}  </p>
                         <!-- check all permissions  -->
                         <div class="grayBack px-3 pt-2 pb-2 br-3">
                             <div class="form-group align-items-center">
@@ -155,7 +155,7 @@
                 <div class="col-md-4 mb-2" >
                     <section class="single_permission br-5">
                         <div class="flex_between align-items-baseline border-bottom pb-2 pt-2 px-2">
-                        <p class="fw-6 fs-15"> {{  Object.keys( permissions )[2]  }}  </p>
+                        <p class="fw-6 fs-15"> {{  $t('home.sub')  }}  </p>
                         <!-- check all permissions  -->
                         <div class="grayBack px-3 pt-2 pb-2 br-3">
                             <div class="form-group align-items-center">
@@ -193,7 +193,7 @@
                  <div class="col-md-4 mb-2" >
                     <section class="single_permission br-5">
                         <div class="flex_between align-items-baseline border-bottom pb-2 pt-2 px-2">
-                        <p class="fw-6 fs-15"> {{  Object.keys( permissions )[3]  }}  </p>
+                        <p class="fw-6 fs-15"> {{  $t('home.job_add')  }}  </p>
                         <!-- check all permissions  -->
                         <div class="grayBack px-3 pt-2 pb-2 br-3">
                             <div class="form-group align-items-center">

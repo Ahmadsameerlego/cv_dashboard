@@ -26,7 +26,7 @@
                 </span>
                 <span class="fs-14 normal text-center"> ٢٨ يوم </span>
                 <span class="fs-14 normal text-center">  {{  subscription.status  }}  </span>
-                <span class="fs-14 normal text-center"> {{ subscription.end_date }} </span>
+                <span class="fs-14 normal text-center"> {{ endDateFormat }} </span>
                 <span class="fs-14 text-center"> 
                     
                     <!-- current  -->
@@ -84,6 +84,15 @@ export default {
         // currentPackage(){
         //     return this.$store.state.currentPackage ;
         // }
+        endDateFormat(){
+            const date = new Date(this.subscription.end_date);
+            const month = (date.getMonth() + 1).toString();
+      const day = date.getDate().toString();
+      const year = date.getFullYear().toString();
+      return `${month}-${day}-${year}`;
+
+
+        }
     },
     methods:{
         async updateSub(){

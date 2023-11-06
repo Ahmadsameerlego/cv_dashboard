@@ -27,7 +27,7 @@
             </div>
             <div class="col-md-5 mb-3">
                 <div class="job_image">
-                    <img class="w-100 h-100" :src="settings.provider_intro_image" alt="job canvas">
+                    <img class="w-100 h-100" :src="require('@/assets/imgs/downloadAppSite.png')" alt="job canvas">
                 </div>
             </div>
         </div>

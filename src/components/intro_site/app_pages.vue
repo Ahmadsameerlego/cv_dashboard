@@ -24,23 +24,23 @@
             <img :src="require('@/assets/imgs/Image 8 (1).png')" alt="">
           </swiper-slide>
           <swiper-slide class="">
+            <img :src="require('@/assets/imgs/app1.png')" alt="">
+          </swiper-slide>
+          <swiper-slide class="">
+            <img :src="require('@/assets/imgs/app2.png')" alt="">
+          </swiper-slide>
+          <swiper-slide class="">
+            <img :src="require('@/assets/imgs/app3.png')" alt="">
+          </swiper-slide>
+          <swiper-slide class="">
+            <img :src="require('@/assets/imgs/app4.png')" alt="">
+          </swiper-slide>
+          <!-- <swiper-slide class="">
             <img :src="require('@/assets/imgs/Image 8 (1).png')" alt="">
           </swiper-slide>
           <swiper-slide class="">
             <img :src="require('@/assets/imgs/Image 8 (1).png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="">
-            <img :src="require('@/assets/imgs/Image 8 (1).png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="">
-            <img :src="require('@/assets/imgs/Image 8 (1).png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="">
-            <img :src="require('@/assets/imgs/Image 8 (1).png')" alt="">
-          </swiper-slide>
-          <swiper-slide class="">
-            <img :src="require('@/assets/imgs/Image 8 (1).png')" alt="">
-          </swiper-slide>
+          </swiper-slide> -->
 
           
         </swiper>

@@ -1,7 +1,7 @@
 <template>
      <!-- subscribtion dialog  -->
      <Dialog v-model:visible="subscribtion" modal  :style="{ width: '50vw' }">
-        <h5 class="fw-bold mainColor text-center"> الباقات المتاحة </h5>
+        <h4 class="fw-bold mainColor text-center"> الباقات المتاحة </h4>
         <p class="text-center grayColor">
             لعمل بروفايل للشركه الخاص بك اختر نوع الباقه التي تريدها
         </p>

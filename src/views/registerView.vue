@@ -71,29 +71,16 @@
 
                 <div class="col-md-6 mb-3" v-if="privateCompany">
                     <!-- company number  -->
-                    <div class="position-relative flex-auto">
+                    <div class="position-relative flex-auto defaultInput">
 
                         <label for="integeronly" class="label fw-bold block mb-2">  رقم السجل التجاري   </label>
-                        <InputNumber v-model="commercial_register" name="commercial_register" class="defaultInput" inputId="integeronly" placeholder=" الرجاء ادخال رقم السجل التجاري  " />
+                        <!-- <InputNumber v-model="commercial_register" name="commercial_register" class="defaultInput" inputId="integeronly" placeholder=" الرجاء ادخال رقم السجل التجاري  " /> -->
+                        <input type="number" v-model="commercial_register" name="commercial_register" class="defaultInput form-control" placeholder=" الرجاء ادخال رقم السجل التجاري  ">
                         <!-- icon  -->
                         <div class="inputIcon">
                             <img :src="require('@/assets/imgs/phone.svg')" alt="">
                         </div>
 
-
-                    </div>
-                </div>
-
-                <div class="col-md-6 mb-3" >
-                    <!-- user name  -->
-                    <div class="position-relative flex-auto">
-
-                        <label for="integeronly" class="label fw-bold block mb-2"> الشخص المسئول </label>
-                        <InputText type="text" class="defaultInput2" v-model="owner" name="owner" placeholder="الرجاء ادخال الشخص المسئول" />
-                        <!-- icon  -->
-                        <div class="inputIcon">
-                            <img :src="require('@/assets/imgs/user.svg')" alt="">
-                        </div>
 
                     </div>
                 </div>
@@ -114,6 +101,23 @@
 
                     </div>
                 </div>
+
+
+                <div class="col-md-6 mb-3" >
+                    <!-- user name  -->
+                    <div class="position-relative flex-auto">
+
+                        <label for="integeronly" class="label fw-bold block mb-2"> الشخص المسئول </label>
+                        <InputText type="text" class="defaultInput2" v-model="owner" name="owner" placeholder="الرجاء ادخال الشخص المسئول" />
+                        <!-- icon  -->
+                        <div class="inputIcon">
+                            <img :src="require('@/assets/imgs/user.svg')" alt="">
+                        </div>
+
+                    </div>
+                </div>
+
+                
 
                 <!-- email  -->
                 <div class="col-md-6 mb-3">
@@ -281,7 +285,7 @@
             </div>
 
 
-            <!-- <div class="flex_between w-75 mx-auto d-flex">
+            <div class="flex_between w-75 mx-auto d-flex">
                 <div class="flex_center newAcc">
                     <p class="fs-6 mt-4 fw-6"> {{ $t('auth.haveNot') }} <button type="button" class="mainColor fw-bold btn p-0" @click.prevent="resendCode"> {{ $t('auth.resend') }} </button> </p>  
                 </div>
@@ -289,7 +293,7 @@
                     <p v-if="timer > 0" class="text-center mt-3">{{ $t('auth.remain')  }}  <span class="mainColor">{{ timer }} {{ $t('auth.second') }}</span> </p>
                 </div>
                 
-            </div> -->
+            </div>
 
         </form>
     </Dialog>
@@ -308,7 +312,7 @@
 </template>
 
 <script>
-import InputNumber from 'primevue/inputnumber';
+// import InputNumber from 'primevue/inputnumber';
 import Dropdown from 'primevue/dropdown';
 import Password from 'primevue/password';
 import InputText from 'primevue/inputtext';
@@ -333,9 +337,9 @@ export default {
             commercial_register : null,
             disabled : false,
             successRegister : false,
-            otp : false,
+            otp : true,
             disabled2 : false,
-            timer: 4,
+            timer: 60,
             intervalId: null,
             openReset : false,
             code : '',
@@ -343,7 +347,7 @@ export default {
         }
     },
     components:{
-        InputNumber,
+        // InputNumber,
         Dropdown,
         Password,
         InputText,
@@ -434,8 +438,13 @@ export default {
                     setTimeout(() => {
                         this.otp = false ;
                         this.successRegister = true ;
-                        this.startTimer();                   
-                    }, 1000);
+                        this.startTimer(); 
+                    }, 2000);
+
+                    setTimeout(() => {
+                        this.$router.push('/login')
+                    }, 5000);
+                
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                     this.disabled2 = false ;
@@ -454,6 +463,7 @@ export default {
             .then( (res)=>{
                 if( res.data.key === 'success' ){
                     this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.timer = 60 ;
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                 }
@@ -520,6 +530,19 @@ export default {
 </script>
 
 <style lang="scss">
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+
     input[type=radio]{
         accent-color:#293255
     }
@@ -548,10 +571,12 @@ export default {
         }
     }
     .p-dropdown{
+        position: relative !important;
         top:0;padding-left:12px;padding-right: 24px;
     }
     .phone .p-dropdown{
             top: 27px;
+            position: absolute !important;
     }
     label{
         font-size: 12px;

@@ -116,10 +116,19 @@ export default {
         }
     },
     mounted(){
-        let user = JSON.parse(localStorage.getItem('user')) ;
-        this.name = user.name ;
-        this.owner = user.owner ;
-        this.image = user.image ;
+        if( localStorage.getItem('profile') ){
+            let user = JSON.parse(localStorage.getItem('profile')) ;
+            this.name = user.name ;
+            this.owner = user.owner ;
+            this.image = user.image ;
+
+        }else if( localStorage.getItem('user') ){
+            let user = JSON.parse(localStorage.getItem('user')) ;
+            this.name = user.name ;
+            this.owner = user.owner ;
+            this.image = user.image ;
+        }
+        
         this.getNotificationCount();
     }
 }

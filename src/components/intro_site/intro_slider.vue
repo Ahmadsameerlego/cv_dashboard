@@ -11,7 +11,6 @@
             disableOnInteraction: false,
             }"
             :modules="modules"
-            :loop="true"
         >
           <swiper-slide class="mx-2" v-for="item in parteners" :key="item">
             <img :src="item.image" alt="partener image">

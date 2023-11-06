@@ -1,11 +1,11 @@
 <template>
   <div class="home">
       <navBarVue />
-      <homeIntroVue  data-aos="zoom-in" data-aos-duration="1000"  data-aos-easing="ease-out-cubic"  />
+      <homeIntroVue    />
       <introSliderVue/>
-      <introVisionVue data-aos="zoom-in" data-aos-duration="1000"  data-aos-easing="ease-out-cubic" />
-      <appPagesVue  data-aos="fade-left" data-aos-duration="1000"  data-aos-easing="ease-out-cubic" />
-      <appStatisticsVue data-aos="fade-right" data-aos-duration="1000"  data-aos-easing="ease-out-cubic" />
+      <introVisionVue  />
+      <appPagesVue   />
+      <appStatisticsVue  />
   </div>
 </template>
 

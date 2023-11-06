@@ -366,6 +366,7 @@ export default {
             user_type: `Company`,
             room_id: this.$route.params.id,
         });
+        // console.log(this.$route.params.id)
         this.sender_image = JSON.parse(localStorage.getItem('user')).image ;
 
         this.$store.dispatch('getchatRooms');

@@ -6,22 +6,22 @@
 
         <div class="d-flex justify-content-between mt-4">
             <div class="single_statistics d-flex justify-content-center flex-column align-items-center">
-                <h5 class="fw-bold mainColor"> +1000 </h5>
+                <h5 class="fw-bold mainColor"> + {{ clients }} </h5>
                 <p class="fw-6 fs-15"> {{ $t('site.clientNumbers') }} </p>
             </div>
 
-            <div class="single_statistics d-flex justify-content-center flex-column align-items-center">
+            <!-- <div class="single_statistics d-flex justify-content-center flex-column align-items-center">
                 <h5 class="fw-bold mainColor"> +1000 </h5>
                 <p class="fw-6 fs-15"> {{ $t('site.userNumbers') }} </p>
-            </div>
+            </div> -->
 
             <div class="single_statistics d-flex justify-content-center flex-column align-items-center">
-                <h5 class="fw-bold mainColor"> +1000 </h5>
+                <h5 class="fw-bold mainColor"> +{{ companies }} </h5>
                 <p class="fw-6 fs-15"> {{ $t('site.companiesNumbers') }} </p>
             </div>
 
             <div class="single_statistics d-flex justify-content-center flex-column align-items-center">
-                <h5 class="fw-bold mainColor"> +1000 </h5>
+                <h5 class="fw-bold mainColor"> {{ downloads }} </h5>
                 <p class="fw-6 fs-15"> {{ $t('site.downloads') }} </p>
             </div>
         </div>
@@ -41,8 +41,28 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
-
+    data(){
+        return{
+            clients : 0,
+            companies : 0,
+            downloads : 0
+        }
+    },
+    methods:{
+        async getCounts(){
+            await axios.get('counts')
+            .then( (res)=>{
+                this.clients = res.data.data.clients;
+                this.companies = res.data.data.companies;
+                this.downloads = res.data.data.downloads;
+            } )
+        }
+    },
+    mounted(){
+        this.getCounts();
+    }
 }
 </script>
 
