@@ -337,7 +337,7 @@ export default {
             commercial_register : null,
             disabled : false,
             successRegister : false,
-            otp : true,
+            otp : false,
             disabled2 : false,
             timer: 60,
             intervalId: null,

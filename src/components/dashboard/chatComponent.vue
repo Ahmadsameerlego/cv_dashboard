@@ -40,8 +40,14 @@
                                             {{  message.body  }}
                                         </p>
                                         <div v-else-if="message.type=='file'" style="height:200px;width:200px;">
-                                            <img :src="message.body" alt="" style="width:100%;height:100%;">
-                                        </div>
+                                                <template v-if="message.body.toLowerCase().endsWith('.pdf')">
+                                                    <embed :src="message.body" type="application/pdf" style="width:100%;height:100%;" />
+                                                </template>
+                                                <template v-else>
+                                                    <img :src="message.body" alt="" style="width:100%;height:100%;" />
+                                                </template>
+                                                <!-- <img :src="message.body" alt="" style="width:100%;height:100%;"> -->
+                                            </div>
                                     </div>
                                     <!-- time  -->
                                     <span class="time grayColor">
@@ -202,7 +208,7 @@ export default {
             const headers = {
               Authorization: `Bearer ${token}`,
             };
-            await axios.post(`upload-room-file/${this.room_id}`, formData , {headers})
+            await axios.post(`upload-room-file/${this.$route.params.id}`, formData , {headers})
             .then( (res)=>{
                 if( res.data.key === 'success' ){
                     this.fileChosen = "";
@@ -226,7 +232,7 @@ export default {
             socket.emit("sendMessage", {
                 sender_id: JSON.parse(localStorage.getItem('user')).id,
                 sender_type: `Company`,
-                sender_name: 'Ezekiel Moses',
+                sender_name: JSON.parse(localStorage.getItem('user')).name,
                 avater: this.avatar,
                 receiver_id: this.singleRoom.id,
                 receiver_type: `User`,
@@ -272,9 +278,12 @@ export default {
                 this.scrollToBottom();
             } )
         },
+        reRenderSocket(){
+            this.$store.dispatch('getSingleRoomMessages', this.room_id )
+        },
         // re render the messages and rooms 
         reRenderMessages(room_id){
-            this.showLoader = true ;
+            // this.showLoader = true ;
             this.$store.dispatch('getSingleRoom', room_id)
             this.$store.dispatch('getSingleRoomMessages', room_id )
             .then(()=>{
@@ -288,7 +297,7 @@ export default {
             console.log(this.user_id)
 
             this.$router.push(`/chat/${room_id}`);
-            this.getUnReadMessages();
+            // this.getUnReadMessages();
             
         },
         // handle scroll 
@@ -345,6 +354,27 @@ export default {
         // console.log(this.user_id)
         // console.log(this.room_id)
         this.getUnReadMessages();
+
+        socket.on('sendMessageRes', (data) => {
+            console.log(data);
+            console.log('neeeeeeew messssssageeeeeee');
+
+            //var date = new Date(data.created_at);
+            //date.toLocaleString("en-US", { timeZone: "Asia/Riyadh" });
+
+            
+            // this.messages.push({
+            //     is_sender : 0,
+            //     sent_by_me: false,
+            //     type: data.type,
+            //     body: data.body,
+            //     // date: date.toDateString("en-US", { timeZone: "Asia/Riyadh" }),
+            //     created_at: data.created_at,
+            // });
+            setTimeout(() => {
+                this.reRenderMessages(this.$route.params.id)
+            }, 500);
+        })
     },
     created(){
                 
@@ -354,7 +384,7 @@ export default {
           console.log('Connected to server');
         });
         socket.on('disconnect', () => {
-          console.log('Connected to server');
+          console.log('discontect to server');
         });
         socket.on("connect_error", (error) => {
             console.error("Socket.io connection error:", error);
@@ -375,22 +405,7 @@ export default {
 
         this.getMessages();
 
-        socket.on('sendMessageRes', (data) => {
-            console.log(data);
-            console.log('neeeeeeew messssssageeeeeee');
 
-            //var date = new Date(data.created_at);
-            //date.toLocaleString("en-US", { timeZone: "Asia/Riyadh" });
-
-            
-            this.messages.push({
-                // sent_by_me: false,
-                type: data.type,
-                body: data.body,
-                // date: date.toDateString("en-US", { timeZone: "Asia/Riyadh" }),
-                // time: data.created_at,
-            });
-        })
     
     }
 }
