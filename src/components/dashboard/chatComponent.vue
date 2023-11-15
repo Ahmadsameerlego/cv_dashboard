@@ -81,7 +81,15 @@
                                     </button>
 
                                     <div class="w-100 form-group position-relative">
-                                        <textarea name="" id="" class="form-control" placeholder="اكتب رسالتك هنا" v-model="text"></textarea>
+                                        <textarea 
+                                            name="" 
+                                            id="" 
+                                            class="form-control" 
+                                            placeholder="اكتب رسالتك هنا" 
+                                            v-model="text"
+                                            @keydown.shift.enter.prevent="addNewLine"
+                                            @keydown.enter.prevent.exact="addMessage"
+                                        ></textarea>
                                         <button class="main_btn submit" @click.prevent="addMessage" :disabled="disabled">
                                              <span v-if="!disabled">ارسال</span> 
                                              <div class="spinner-border" role="status" v-if="disabled">
@@ -115,7 +123,7 @@
                                         </div>
                                         <!-- chat image  -->
                                         <div class="chat_details mx-3">
-                                            <h5 class="fw-bold mb-3 fs-14"> {{ room.members[0].name }}  </h5>
+                                            <h5 class="fw-bold mb-3 fs-14 d-flex"> {{ room.members[0].name }}  </h5>
                                             <p class="grayColor  fw-6 fs-12">  
                                                 {{ room.last_message_body }}
                                             </p>
@@ -125,7 +133,8 @@
 
                                         <!-- unreadCounter  -->
                                         <div class="unread_count br-50 flex_center whiteColor">
-                                            {{room.messages_count}}
+                                            {{room.unseen}}
+                                            
                                         </div>
 
                                         <!-- time  -->
@@ -176,6 +185,11 @@ export default {
     components:{
     },
     methods:{
+        addNewLine(event) {
+            if (event.key === 'Enter' && event.shiftKey) {
+                this.text += '\n';
+            }
+        },
         // upload file 
         uploadFile(){
             this.file = this.$refs.file.files[0];
@@ -199,11 +213,15 @@ export default {
             } else {
                 // send text message
                 this.send(this.text, "text");
+                console.log(this.text)
             }
+
+            
 
         },
         // upload file 
         async uploadFileEnd(formData){
+            this.disabled = true ;
             const token = localStorage.getItem('token');
             const headers = {
               Authorization: `Bearer ${token}`,
@@ -213,35 +231,60 @@ export default {
                 if( res.data.key === 'success' ){
                     this.fileChosen = "";
                     this.send(
-                        res.data.data.file_name,
+                        res.data.data.file_url,
                         "file",
-                        res.data.data.file_url
+                        res.data.data.file_name
                     );
+
+                    this.disabled = false ;
 
                 }
             } )
         },
         // argument send method 
         send(msg, type ,url){
-            let body = msg;
-            if (url != null) {
-                body = url;
-            }
-
+            // let body = msg;
             this.disabled = true ;
-            socket.emit("sendMessage", {
-                sender_id: JSON.parse(localStorage.getItem('user')).id,
-                sender_type: `Company`,
-                sender_name: JSON.parse(localStorage.getItem('user')).name,
-                avater: this.avatar,
-                receiver_id: this.singleRoom.id,
-                receiver_type: `User`,
-                room_id: this.$route.params.id,
-                type: type,
-                body: body,
-                // duration: 0,
-                // created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
-            });
+
+            if (url != '') {
+                socket.emit("sendMessage", {
+                    sender_id: JSON.parse(localStorage.getItem('user')).id,
+                    sender_type: `Company`,
+                    sender_name: JSON.parse(localStorage.getItem('user')).name,
+                    avater: this.avatar,
+                    receiver_id: this.singleRoom.id,
+                    receiver_type: `User`,
+                    room_id: this.$route.params.id,
+                    type: type,
+                    body: url,
+                    // duration: 0,
+                    // created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
+                });
+            }
+            if(url == undefined){
+                console.log(msg)
+                socket.emit("sendMessage", {
+                    sender_id: JSON.parse(localStorage.getItem('user')).id,
+                    sender_type: `Company`,
+                    sender_name: JSON.parse(localStorage.getItem('user')).name,
+                    avater: this.avatar,
+                    receiver_id: this.singleRoom.id,
+                    receiver_type: `User`,
+                    room_id: this.$route.params.id,
+                    type: type,
+                    body: msg,
+                    // duration: 0,
+                    // created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
+                });
+                
+            }
+                
+                // }
+            // console.log(msg)
+            // console.log(url)
+            // console.log(body)
+
+            
 
             this.messages.push({
                 // created_at: date,
@@ -250,9 +293,9 @@ export default {
                 // avatar : this.avatar,
                 sent_by_me: true,
                 type: type,
-                body: body,
+                body: msg,
                 created_dt :new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
-                fileChosen : this.fileChosen
+                // fileChosen : this.fileChosen
 
             });
 
@@ -260,9 +303,9 @@ export default {
             this.$nextTick(() => {
                 this.scrollToBottom();
             });
-            setTimeout(() => {
+            // setTimeout(() => {
                 this.disabled = false ;
-            }, 700);
+            // }, 700);
             this.$store.dispatch('getchatRooms');
 
         },
@@ -578,6 +621,7 @@ export default {
             border-radius: 10px;
             border: 1px solid #F0F0F0;
             background: rgba(251, 251, 251, 0.97);
+            overflow: hidden;
             .chat_image{
                 width:75px;
                 height: 75px;

@@ -133,8 +133,8 @@ export default {
             fd.append( 'phone' , this.phone );
             fd.append( 'password', this.password );
             fd.append('country_code', this.country.key);
-            fd.append('device_type', 'ios');
-            fd.append('device_id', localStorage.getItem('device_id'));
+            fd.append('device_type', 'web');
+            fd.append('device_id', localStorage.getItem('FCMToken'));
 
             const response = await this.$store.dispatch('login', fd)
 

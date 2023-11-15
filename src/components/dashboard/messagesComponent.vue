@@ -28,7 +28,7 @@
 
                             <!-- unreadCounter  -->
                             <div class="unread_count br-50 flex_center whiteColor">
-                                2
+                                {{room.unseen}}
                             </div>
 
                             <!-- time  -->

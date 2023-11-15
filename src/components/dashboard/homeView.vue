@@ -200,16 +200,13 @@ export default {
         };
     },
     beforeMount(){
-        
-
     },
     mounted() {
-        
         this.getRate();
         setTimeout(() => {
             this.chartData = this.setChartData();
             this.chartData2 = this.setChartData2();
-        }, 800);
+        }, 1200);
         this.getJobApps();
         this.getEmployments();
         this.getJobs();

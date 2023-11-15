@@ -93,7 +93,7 @@ export default {
         return{
             nots : [],
             // city pagination 
-            currentPage : null,
+            currentPage : 1,
             perPage : null,
             totalPages : null,
 

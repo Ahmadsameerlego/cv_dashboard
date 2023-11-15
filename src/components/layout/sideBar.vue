@@ -216,6 +216,7 @@ export default {
                 localStorage.removeItem('token');
                 localStorage.removeItem('user');
                 localStorage.removeItem('registerUser');
+                // localStorage.removeItem('FCMToken');
                 localStorage.setItem('isAuth', false);
                 setTimeout(() => {
                     this.$router.push('/login')

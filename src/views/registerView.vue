@@ -287,7 +287,7 @@
 
             <div class="flex_between w-75 mx-auto d-flex">
                 <div class="flex_center newAcc">
-                    <p class="fs-6 mt-4 fw-6"> {{ $t('auth.haveNot') }} <button type="button" class="mainColor fw-bold btn p-0" @click.prevent="resendCode"> {{ $t('auth.resend') }} </button> </p>  
+                    <p class="fs-6 mt-4 fw-6"> {{ $t('auth.haveNot') }} <button type="button" class="mainColor fw-bold btn p-0" @click.prevent="resendCode" :disabled="disabledResned"> {{ $t('auth.resend') }} </button> </p>  
                 </div>
                 <div  v-if="showResend">
                     <p v-if="timer > 0" class="text-center mt-3">{{ $t('auth.remain')  }}  <span class="mainColor">{{ timer }} {{ $t('auth.second') }}</span> </p>
@@ -343,7 +343,8 @@ export default {
             intervalId: null,
             openReset : false,
             code : '',
-            showResend : false
+            showResend : false,
+            disabledResned : false
         }
     },
     components:{
@@ -463,7 +464,10 @@ export default {
             .then( (res)=>{
                 if( res.data.key === 'success' ){
                     this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.startTimer() ;
                     this.timer = 60 ;
+                    this.showResend = true ;
+                    this.disabledResned = true ;
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                 }
@@ -485,9 +489,6 @@ export default {
                 fd.append('commercial_register', this.commercial_register);
             }
 
-
-        
-
             const response = await this.$store.dispatch('register', fd);
             
             if( response.success === true ){
@@ -497,7 +498,8 @@ export default {
                     this.otp = true ;
                 }, 1000);
                 // set user after register 
-                localStorage.setItem('registerUser',JSON.stringify(this.$store.state.user) )
+                localStorage.setItem('registerUser',JSON.stringify(this.$store.state.user) );
+                localStorage.setItem('regPhone', this.phone)
             }else{
                 this.$toast.add({ severity: 'error', summary: response.message, life: 3000 });
                 this.disabled = false ;

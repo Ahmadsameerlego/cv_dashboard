@@ -50,100 +50,155 @@ const routes = [
   {
     path : '/register',
     name : 'register',
-    component : register
+    component : register,
+    meta : {
+      title : 'تسجيل حساب'
+    }
   },
   {
     path : '/dashboard',
     name : 'dashboard',
     component : dashboard,
     meta : {
-      requiresAuth : true
+      requiresAuth : true,
+      title : 'الرئيسية'
     }
   },
   {
     path : '/search',
     name : 'search',
-    component : search
+    component : search,
+    meta : {
+      title : 'بحث'
+    }
   },
   {
     path : '/profile/:id',
     name : 'profile',
-    component : profile
+    component : profile,
+    meta : {
+      title : 'الملف الشخصي'
+    }
   },
   {
     path : '/chat/:id',
     name : 'chat',
-    component : chat
+    component : chat,
+    meta : {
+      title : 'المحادثة'
+    }
   },
   {
     path : '/addJob',
     name : 'addJob',
-    component : addJob
+    component : addJob,
+    meta : {
+      title : 'اضافة اعلان'
+    }
   },
   {
     path : '/messages',
     name : 'messages',
-    component : messages
+    component : messages,
+    meta : {
+      title : 'المحادثات'
+    }
   },
   {
     path : '/orders',
     name : 'orders',
-    component : orders
+    component : orders,
+    meta : {
+      title : 'الطلبات'
+    }
   },
   {
     path : '/details/:id',
     name : 'details',
-    component : details
+    component : details,
+    meta : {
+      title : 'التفاصيل'
+    }
   },
   {
     path : '/settings',
     name : 'settings',
-    component : settings
+    component : settings,
+    meta : {
+      title : 'الاعدادات'
+    }
   },
   {
     path : '/ownDetails/:id',
     name : 'ownDetails',
-    component : ownDetails
+    component : ownDetails,
+    meta : {
+      title : 'التفاصيل'
+    }
   },
   {
     path : '/editJob',
     name : 'editJob',
-    component : editJob
+    component : editJob,
+    meta : {
+      title : 'تعديل الاعلان'
+    }
   },
   {
     path : '/contactUs',
     name : 'contactUs',
-    component : contactUs
+    component : contactUs,
+    meta : {
+      title : 'تواصل معنا'
+    }
   },
   {
     path : '/setting',
     name : 'setting',
-    component : setting
+    component : setting,
+    meta : {
+      title : 'الاعدادات'
+    }
   },
   {
     path : '/access',
     name : 'access',
-    component : access
+    component : access,
+    meta : {
+      title : 'الصلاحيات'
+    }
   },
   {
     path : '/addEmp',
     name : 'addEmp',
-    component : addEmp
+    component : addEmp,
+    meta : {
+      title : 'اضافة موظف'
+    }
   },
   {
     path : '/editEmp/:id',
     name : 'editEmp',
-    component : editEmp
+    component : editEmp,
+    meta : {
+      title : 'تعديل موظف'
+    }
   },
   {
     path : '/subscriptions',
     name : 'subscriptions',
-    component : subscriptions
+    component : subscriptions,
+    meta : {
+      title : 'الاشتراك'
+    }
   },
   {
     path : '/notifications',
     name : 'notifications',
-    component : notifications
+    component : notifications,
+    meta : {
+      title : 'الاشعارات'
+    }
   }
 ]
 

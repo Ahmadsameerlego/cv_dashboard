@@ -456,6 +456,7 @@ export default {
       border-radius: 8px;
       border: 1px solid #E3E3E3;
       background: #FFF;
+      height:225px;
       .card_header{
         border-bottom: 1px solid #DFDFDF;
         padding-bottom: 16px;
