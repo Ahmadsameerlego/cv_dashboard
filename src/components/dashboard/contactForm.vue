@@ -75,7 +75,7 @@
                             <div class="form-group position-relative phone">
                                 <img class="form_icon" :src="require('@/assets/imgs/grayPhone.svg')" alt="" style="    object-fit: contain;">
                                 <label for=""> {{ $t('set.phone')  }} </label>
-                                <input type="tel" v-model="phone" name="phone" class="form-control job_form" :placeholder="$t('set.phonePlace')">
+                                <input type="number" v-model="phone" name="phone" class="form-control job_form" style="direction:rtl" :placeholder="$t('set.phonePlace')">
 
                                 <!-- select phone  -->
                                 <Dropdown v-model="country" :options="countries" optionLabel="key"  @change="setCountryCode" class="w-full md:w-14rem" style="top: 27px;height: 45px !important;" />

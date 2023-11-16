@@ -229,7 +229,7 @@ export default {
             await axios.post(`upload-room-file/${this.$route.params.id}`, formData , {headers})
             .then( (res)=>{
                 if( res.data.key === 'success' ){
-                    this.fileChosen = "";
+                    this.fileChosen = null;
                     this.send(
                         res.data.data.file_url,
                         "file",
@@ -243,10 +243,10 @@ export default {
         },
         // argument send method 
         send(msg, type ,url){
-            // let body = msg;
+            let body = url;
             this.disabled = true ;
 
-            if (url != '') {
+            if (body != '' ) {
                 socket.emit("sendMessage", {
                     sender_id: JSON.parse(localStorage.getItem('user')).id,
                     sender_type: `Company`,
@@ -256,12 +256,13 @@ export default {
                     receiver_type: `User`,
                     room_id: this.$route.params.id,
                     type: type,
-                    body: url,
+                    body: body,
                     // duration: 0,
                     // created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
                 });
+               
             }
-            if(url == undefined){
+            if(body == undefined){
                 console.log(msg)
                 socket.emit("sendMessage", {
                     sender_id: JSON.parse(localStorage.getItem('user')).id,
@@ -277,14 +278,7 @@ export default {
                     // created_at: new Date().toLocaleTimeString([], { hour: '2-digit', minute:'2-digit' }),
                 });
                 
-            }
-                
-                // }
-            // console.log(msg)
-            // console.log(url)
-            // console.log(body)
-
-            
+            }            
 
             this.messages.push({
                 // created_at: date,
@@ -300,6 +294,9 @@ export default {
             });
 
             this.text = "";
+            // msg = "";
+            // url = "";
+            body = undefined ;
             this.$nextTick(() => {
                 this.scrollToBottom();
             });
