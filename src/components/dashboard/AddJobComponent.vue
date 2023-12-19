@@ -47,7 +47,7 @@
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
               <label for=""> المجال الوظيفي </label>
-              <Dropdown v-model="selectedEmp"  :options="emps" filter optionLabel="title" :placeholder="$t('job.chooseEmp')" class="search_input w-full md:w-14rem">
+              <Dropdown v-model="selectedEmp" ref="empRef"    :options="mergedOptions" filter optionLabel="title" :placeholder="$t('job.chooseEmp')" class="search_input w-full md:w-14rem">
                 <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
                         <div>{{ slotProps.value.title }}</div>
@@ -60,6 +60,12 @@
                     <div class="flex align-items-center">
                         <div>{{ slotProps.option.title }}</div>
                     </div>
+                </template>
+
+                <template >
+                  <div class="flex align-items-center">
+                    <div>اخرى</div>
+                  </div>
                 </template>
               </Dropdown>
               
@@ -517,7 +523,9 @@ export default {
       ad_id : null,
       ad : {},
       company : {},
-      isSub : null
+      isSub : null,
+      staticOption: { title: 'اخرى', value: 'other' },
+
       // skills : [],
       // certifications : []
     }
@@ -797,6 +805,10 @@ export default {
         
   },
   computed:{
+    mergedOptions() {
+      // Combine array options with the static option
+      return [...this.emps, this.staticOption];
+    },
     activities(){
       return this.$store.state.activites ;
     },
@@ -874,9 +886,21 @@ export default {
     this.$store.dispatch('getCities');
   },
   watch:{
-    selectedActivity(){
-      console.log(this.selectedActivity)
-    }
+    
+    selectedEmp(newVal) {
+      if (newVal && newVal.value === 'other') {
+        // Handle the "اخرى" option selection
+        // For example, show a modal or perform a specific action
+        console.log('Selected اخرى option');
+
+         // Check if the ref exists and has the setAttribute method
+        if (this.$refs.empRef && typeof this.$refs.empRef.setAttribute === 'function') {
+          this.$refs.empRef.setAttribute('editable');
+        } else {
+          console.error('empRef not found or does not have setAttribute method');
+        }
+      }
+    },
   }
   
 }

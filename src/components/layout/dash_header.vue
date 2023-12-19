@@ -5,7 +5,7 @@
             <div>
                 <h5 class="fw-bold mainColor">
                     <span> {{ $t('header.dash') }} </span>
-                    <img class="laughImoji" :src="require('@/assets/imgs/113472-happy-eye-emoji-animation.png')" alt="">
+                    <!-- <img class="laughImoji" :src="require('@/assets/imgs/113472-happy-eye-emoji-animation.png')" alt=""> -->
                 </h5>
                 <p class="fw-6 grayColor fs-16">
                     {{ $t('header.welcome')  }}

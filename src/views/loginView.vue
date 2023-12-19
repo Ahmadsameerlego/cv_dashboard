@@ -60,6 +60,11 @@
                         <p class="fs-6 mt-4 fw-6"> {{ $t('auth.haveAnAcc') }} ؟  <router-link to="/register" class="mainColor fw-bold"> {{ $t('auth.register') }} </router-link> </p>  
                     </div>
 
+                    <!-- new account  -->
+                    <div class="flex_center newAcc">
+                        <p class="fs-6 mt-4 fw-6"> <router-link to="/" class="mainColor fw-bold"> الرجوع للرئيسية</router-link> </p>  
+                    </div>
+
 
                 </form>
             </div>

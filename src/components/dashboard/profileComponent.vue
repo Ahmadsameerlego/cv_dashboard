@@ -241,6 +241,10 @@
                         <span class="mx-1 whiteColor fw-6 fs-13"> الذهاب للمحاثة </span>
                     </router-link>
 
+                    <button class="btn accept whiteColor main_btn pt-2 pb-2" v-if="status=='accepted'&&user.is_employment==0" :disabled="emp_disabled" @click.prevent="employ">
+                        توظيف
+                    </button>
+
                     <!-- accept  -->
                     <button class="btn accept whiteColor main_btn pt-2 pb-2" v-ripple :disabled="acceptDisabled" @click.prevent="acceptApplication" v-if="status=='pending'">
                         <span v-if="!acceptDisabled">قبول</span>
@@ -298,6 +302,13 @@
                         </div>
                     </div>
                 </section>
+
+                <div class="profile_card mb-3" v-if="user.is_employment==1">
+                    <div class="main_btn text-center">
+                        تم توظيفه
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -348,7 +359,8 @@ export default {
             refuseApplication : false,
             refuseReason : '',
             status : '',
-            room_id : ''
+            room_id : '',
+            emp_disabled : false
         }
     },
     computed:{
@@ -413,6 +425,29 @@ export default {
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                     this.acceptDisabled = false ;
+                }
+            } )
+        },
+
+        async employ(){
+            this.emp_disabled = true ;
+            const token = localStorage.getItem('token');
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+
+            const fd = new FormData();
+            fd.append('job_application_id', localStorage.getItem('job_app_id'));
+
+            await axios.post('company/job-applications/accept', fd , {headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.emp_disabled = false ;
+                    this.getUserInfo();
+                }else{
+                    this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                    this.emp_disabled = false ;
                 }
             } )
         },

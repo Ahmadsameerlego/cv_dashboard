@@ -219,6 +219,11 @@
             <div class="flex_center newAcc">
                 <p class="fs-6 mt-4 fw-6"> {{ $t('set.haveAnAcc') }} ؟  <router-link to="/login" class="mainColor fw-bold"> {{ $t('set.login') }} </router-link> </p>  
             </div>
+
+            <!-- new account  -->
+            <div class="flex_center newAcc">
+                        <p class="fs-6 mt-4 fw-6"> <router-link to="/" class="mainColor fw-bold"> الرجوع للرئيسية</router-link> </p>  
+                    </div>
         </form>
 
 
