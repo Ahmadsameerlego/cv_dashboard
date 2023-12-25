@@ -223,6 +223,44 @@
               <MultiSelect v-model="selectedSkill" :options="skills" filter optionLabel="title" :placeholder="$t('search.skills')"
                 :maxSelectedLabels="3" class="w-full md:w-20rem" />
 
+                <div class="mt-2 mb-2 fs-13">
+                  اذ لم تجد المهارات  <span class="text-danger" @click="addSkill=true" style="cursor:pointer">اضغط هنا</span>
+              </div>
+              <!-- add cer  Dialog -->
+              <Dialog v-model:visible="addSkill" modal :style="{ width: '50vw' }">
+                
+
+                  <form ref="addSkills" @submit.prevent="addNewSkill" class="flex flex-wrap gap-3 p-fluid">
+
+                    <h5 class="fw-bold text-center"> اضافة مهادة </h5>  
+
+
+                    <div class="form-group mb-3">
+                      <label for="">  اسم المهارة بالعربية </label>
+                      <input type="text" class="form-control" name="title[ar]" v-model="cer_name_ar" placeholder=" الرجاء ادخال اسم المهارة بالعربية">
+                    </div>
+
+                    <div class="form-group">
+                      <label for="">  اسم المهارة بالانجليزية </label>
+                      <input type="text" class="form-control" name="title[en]" v-model="cer_name_en" placeholder="الرجاء ادخال اسم المهارة بالانجليزية">
+                    </div>
+
+                    <!-- submit  -->
+                    <div class="mt-4">
+                        <button class="main_btn  fs-5 w-75 mx-auto flex_center" :disabled="skill_disabled"> 
+                            <span  v-if="!skill_disabled"> تأكيد </span>
+                            <div class="spinner-border" role="status" v-if="skill_disabled">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </button>
+                    </div>
+
+
+                    
+
+                  </form>
+              </Dialog>
+
             </div>
           </div>
 
@@ -326,7 +364,48 @@
               <MultiSelect v-model="selectedCert" :options="certs" filter optionLabel="title" :placeholder="$t('job.cerDesc')"
                 :maxSelectedLabels="3" class="w-full md:w-20rem" />
 
+              
+
             </div>
+            <div class="mt-2 mb-2 fs-13">
+                اذ لم تجد الشهادات  <span class="text-danger" @click="addCer=true" style="cursor:pointer">اضغط هنا</span>
+            </div>
+            <!-- add cer  Dialog -->
+            <Dialog v-model:visible="addCer" modal :style="{ width: '50vw' }">
+              
+
+                <form ref="addCert" @submit.prevent="addNewCertification" class="flex flex-wrap gap-3 p-fluid">
+
+                  <h5 class="fw-bold text-center"> اضافة شهادة </h5>  
+
+
+                  <div class="form-group mb-3">
+                    <label for="">  اسم الشهادة بالعربية </label>
+                    <input type="text" class="form-control" name="title[ar]" v-model="cer_name_ar" placeholder=" الرجاء ادخال اسم الشهادة بالعربية">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="">  اسم الشهادة بالانجليزية </label>
+                    <input type="text" class="form-control" name="title[en]" v-model="cer_name_en" placeholder="الرجاء ادخال اسم الشهادة بالانجليزية">
+                  </div>
+
+                  <!-- submit  -->
+                  <div class="mt-4">
+                      <button class="main_btn  fs-5 w-75 mx-auto flex_center" :disabled="cer_disabled"> 
+                          <span  v-if="!cer_disabled"> تأكيد </span>
+                          <div class="spinner-border" role="status" v-if="cer_disabled">
+                              <span class="visually-hidden">Loading...</span>
+                          </div>
+                      </button>
+                  </div>
+
+
+                   
+
+                </form>
+            </Dialog>
+
+
           </div>
 
           <div class="col-md-6 mb-3">
@@ -417,6 +496,11 @@ import axios from 'axios';
 export default {
   data(){
     return{
+      addCer : false ,
+      cer_disabled : false ,
+      skill_disabled : false ,
+      addSkill : false ,
+
       locations:
       {
           lat: 0,
@@ -658,6 +742,57 @@ export default {
 
           console.log(response)
 
+        },
+
+        // add certification 
+        async addNewCertification(){
+          this.cer_disabled = true ;
+          const fd = new FormData(this.$refs.addCert);
+
+          await axios.post('user/certifications/store', fd , {
+            headers: {
+              Authorization : `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          .then( (res)=>{
+            if( res.data.key === 'success' ){
+              this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+              this.addCer = false ;
+              setTimeout(() => {
+                this.$store.dispatch('getCertifications');
+              }, 1000);
+            }else{
+              this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+            }
+            this.cer_disabled = false ;
+
+          } )
+          
+        },
+        // add skill 
+        async addNewSkill(){
+          this.skill_disabled = true ;
+          const fd = new FormData(this.$refs.addSkills);
+
+          await axios.post('user/skills/store', fd , {
+            headers: {
+              Authorization : `Bearer ${localStorage.getItem('token')}`
+            }
+          })
+          .then( (res)=>{
+            if( res.data.key === 'success' ){
+              this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+              this.addSkill = false ;
+              setTimeout(() => {
+                this.$store.dispatch('getSkills');
+              }, 1000);
+            }else{
+              this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+            }
+            this.skill_disabled = false ;
+
+          } )
+          
         },
 
         // get ad details for edit 

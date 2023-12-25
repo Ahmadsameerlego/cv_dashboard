@@ -245,6 +245,7 @@ export default {
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            min-height:330px ; 
             .sub_image{
                 width:100px;
                 height:100px;
