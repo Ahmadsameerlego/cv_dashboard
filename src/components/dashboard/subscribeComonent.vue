@@ -4,7 +4,7 @@
             {{ $t('sub.title') }}
         </h6>
         <p class="fw-6 grayColor">
-            Lorem ipsum dolor sit amet consectetur.
+            <!-- Lorem ipsum dolor sit amet consectetur. -->
         </p>
         <!-- subscribe table  -->
         <section class="subs">
@@ -28,37 +28,83 @@
                 <span class="fs-14 normal text-center">  {{  subscription.status  }}  </span>
                 <span class="fs-14 normal text-center"> {{ endDateFormat }} </span>
                 <span class="fs-14 text-center"> 
-                    
-                    <!-- current  -->
-                    <div class="current whiteColor fw-6 fs-14 px-5 pt-2 pb-2 br-3" v-if="isSub==1">
-                        {{ $t('sub.current')  }}
+                    <div v-if="currentPackage.price='0.00'">
+                        <button class="main_btn fw-6 fs-14 px-5 pt-2 pb-2 br-3" :disabled="disabled" @click="updateFree" >
+                            {{  $t('sub.renew')  }}
+                        </button>
                     </div>
-                    <!-- new  -->
-                    <button class="main_btn fw-6 fs-14 px-5 pt-2 pb-2 br-3" @click="updateSub" :disabled="disabled"  v-if="isSub==0">
-                        {{  $t('sub.renew')  }}
-                    </button>
+
+                    <div v-else>
+                        <!-- current  -->
+                        <div class="current whiteColor fw-6 fs-14 px-5 pt-2 pb-2 br-3" v-if="subscription.is_expired===false">
+                            {{ $t('sub.current')  }}
+                        </div>
+                        <!-- new  -->
+                        <button class="main_btn fw-6 fs-14 px-5 pt-2 pb-2 br-3" @click="pay_type=true"   v-else>
+                            {{  $t('sub.renew')  }}
+                        </button>
+                    </div>
+                    
                 </span>
             </div>
 
         </section>
     </section>
 
+
+    <!-- select payment way  -->
+    <Dialog  v-model:visible="pay_type" modal :style="{ width: '40vw' }">
+        <h5 class="fw-bold mainColor text-center mb-4"> 
+            اختر وسيلة الدفع
+        </h5> 
+
+        <section class="pay_methods">
+            <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="mada" class="payment_input" v-model="payment_type" id="">
+                <h5>MADA</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/mada.png')" alt="">
+                </div>
+            </div>
+            <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="visa" class="payment_input" v-model="payment_type" id="">
+                <h5>VISA</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/visa.png')" alt="">
+                </div>
+            </div>
+            <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="master" class="payment_input" v-model="payment_type" id="">
+                <h5>MASTER CARD</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/master.png')" alt="">
+                </div>
+            </div>
+            <!-- <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="AMEX"  class="payment_input" v-model="payment_type" id="">
+                <h5>AMEX</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/amex.svg')" alt="">
+                </div>
+            </div> -->
+
+            <div class="flex_center">
+                <button class="main_btn btn pt-2 pb-2 px-5" :disabled="disabled" @click.prevent="updateSub"> ادفع الان </button>
+            </div>
+        </section>
+    </Dialog>
     <!-- pay  -->
-    <Dialog v-model:visible="pay" modal :style="{ width: '35vw' }">
+    <Dialog v-model:visible="pay" modal :style="{ width: '65vw' }">
         <h5 class="fw-bold mainColor text-center mb-2"> 
-            {{ $t('sub.choose')  }}
+            {{  $t('sub.payNow')  }}
         </h5>
 
-        <p class="text-center">
-            مولد النص العربي هذا النص هو مثال لنص يمكن ان يستبدل في نفس
-المساحه هنا للمصممين    
-        </p>
-
-    
-        <div class="flex_center mt-4">
-            <button class="main_btn pt-2 pb-2  w-50" @click="detelte"> {{  $t('sub.payNow')  }} </button>
-        </div>
+        <iframe :src="payment_gate_link" frameborder="0" class="payment_gate"></iframe>
     </Dialog>
+
+
+
+
     <Toast />
 </template>
 
@@ -74,7 +120,10 @@ export default {
             isSub : false,
             disabled : false,
             subscription : {},
-            currentPackage : {}
+            currentPackage : {},
+            payment_gate_link : '',
+            pay_type :false,
+            payment_type : ''
         }
     },
     computed:{
@@ -95,6 +144,30 @@ export default {
         }
     },
     methods:{
+        async updateFree(){
+            this.disabled = true ;
+            const token = localStorage.getItem('token');
+            const headers = {
+              Authorization: `Bearer ${token}`,
+            };
+            const fd = new FormData();
+            // fd.append('card_type', this.payment_type);
+            await axios.post('company/subscription/update', fd,{headers})
+            .then( (res)=>{
+                if( res.data.key === 'success' ){
+                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    this.disabled = false ;
+                    // this.pay_type = false ;
+                    // setTimeout(() => {
+                    //     this.pay = true ;
+                    // }, 1000);
+                    // this.payment_gate_link = res.data.data.checkoutUrl ;
+                }else{
+                    this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                    this.disabled = false ;
+                }
+            } )
+        },
         async updateSub(){
             this.disabled = true ;
             const token = localStorage.getItem('token');
@@ -102,11 +175,17 @@ export default {
               Authorization: `Bearer ${token}`,
             };
             const fd = new FormData();
+            fd.append('card_type', this.payment_type);
             await axios.post('company/subscription/update', fd,{headers})
             .then( (res)=>{
-                if( res.data.key === 'successs' ){
-                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                if( res.data.key === 'success' ){
+                    // this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
                     this.disabled = false ;
+                    this.pay_type = false ;
+                    setTimeout(() => {
+                        this.pay = true ;
+                    }, 1000);
+                    this.payment_gate_link = res.data.data.checkoutUrl ;
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                     this.disabled = false ;
@@ -114,7 +193,6 @@ export default {
             } )
             
         },
-
         getSubscription(){
             const token = localStorage.getItem('token');
             const headers = {
@@ -131,9 +209,6 @@ export default {
             .catch( (err)=>{
                 this.$toast.add({ severity: 'error', summary: err, life: 3000 });
             } )
-
-            
-
         }
     },
     components:{
@@ -141,7 +216,7 @@ export default {
         Toast
     },
     mounted(){
-        let profile = JSON.parse(localStorage.getItem('profile'));
+        let profile = JSON.parse(localStorage.getItem('user'));
         this.isSub = profile.has_subscription ;
     },
     created(){
@@ -152,6 +227,29 @@ export default {
 </script>
 
 <style lang="scss">
+    .payment_input{
+        position: absolute;
+        width:100%;
+        height:100%;
+        top:0;
+        right:0;
+        opacity: 0;
+    }
+    .single_pay:has(.payment_input:checked){
+        border: 1px solid #A2AAE2;
+        background-color: #a2a9e224;
+    }
+    .single_pay{
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        img{
+            width:120px;
+            height:60px;
+            object-fit: contain;
+        }
+    }
     .subs{
         background-color: #fff;
         border-radius: 8px;
@@ -164,5 +262,9 @@ export default {
         .normal{
             width: 120px;
         }
+    }
+    .payment_gate{
+        width: 100%;
+        height:500px;
     }
 </style>
