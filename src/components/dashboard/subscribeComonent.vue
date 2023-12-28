@@ -24,16 +24,18 @@
                 <span class="fs-14 text-center details"> 
                     {{ currentPackage.description }}
                 </span>
-                <span class="fs-14 normal text-center"> ٢٨ يوم </span>
+                <span class="fs-14 normal text-center"> {{ subscription.reminder_days }} </span>
                 <span class="fs-14 normal text-center">  {{  subscription.status  }}  </span>
                 <span class="fs-14 normal text-center"> {{ endDateFormat }} </span>
                 <span class="fs-14 text-center"> 
-                    <div v-if="currentPackage.price='0.00'">
-                        <button class="main_btn fw-6 fs-14 px-5 pt-2 pb-2 br-3" :disabled="disabled" @click="updateFree" >
+                    <div v-if="subscription.free==true">
+                        <div class="current whiteColor fw-6 fs-14 px-5 pt-2 pb-2 br-3" v-if="subscription.is_expired===false">
+                            {{ $t('sub.current')  }}
+                        </div>
+                        <button class="main_btn fw-6 fs-14 px-5 pt-2 pb-2 br-3" v-else :disabled="disabled" @click="updateFree" >
                             {{  $t('sub.renew')  }}
                         </button>
                     </div>
-
                     <div v-else>
                         <!-- current  -->
                         <div class="current whiteColor fw-6 fs-14 px-5 pt-2 pb-2 br-3" v-if="subscription.is_expired===false">
@@ -47,6 +49,7 @@
                     
                 </span>
             </div>
+            <!-- {{ currentPackage.price }} -->
 
         </section>
     </section>
@@ -161,6 +164,7 @@ export default {
                     // setTimeout(() => {
                     //     this.pay = true ;
                     // }, 1000);
+                    this.getSubscription();
                     // this.payment_gate_link = res.data.data.checkoutUrl ;
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });

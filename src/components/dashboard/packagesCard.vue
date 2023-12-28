@@ -32,7 +32,7 @@
                         </span>
                         
                         <!-- input  -->
-                        <input type="radio" name="pkg" class="checkPkg" @change="setPkg(pkg.id)"  :value="pkg.id">
+                        <input type="radio" name="pkg" class="checkPkg" @change="setPkg(pkg.id, pkg.free)"  :value="pkg.id">
                         <label for="" class="package_label">
                         </label>
 
@@ -53,6 +53,56 @@
            
         </section>
     </Dialog>
+
+    <Dialog  v-model:visible="pay_type" modal :style="{ width: '40vw' }">
+        <h5 class="fw-bold mainColor text-center mb-4"> 
+            اختر وسيلة الدفع
+        </h5> 
+
+        <section class="pay_methods">
+            <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="mada" class="payment_input" v-model="payment_type" id="">
+                <h5>MADA</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/mada.png')" alt="">
+                </div>
+            </div>
+            <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="visa" class="payment_input" v-model="payment_type" id="">
+                <h5>VISA</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/visa.png')" alt="">
+                </div>
+            </div>
+            <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="master" class="payment_input" v-model="payment_type" id="">
+                <h5>MASTER CARD</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/master.png')" alt="">
+                </div>
+            </div>
+            <!-- <div class="single_pay position-relative flex_between">
+                <input type="radio" name="payment_type" value="AMEX"  class="payment_input" v-model="payment_type" id="">
+                <h5>AMEX</h5>
+                <div class="mx-3">
+                    <img :src="require('@/assets/imgs/amex.svg')" alt="">
+                </div>
+            </div> -->
+
+            <div class="flex_center">
+                <button class="main_btn btn pt-2 pb-2 px-5" :disabled="disabled" @click.prevent="updateSub"> ادفع الان </button>
+            </div>
+        </section>
+    </Dialog>
+
+       <!-- pay  -->
+       <Dialog v-model:visible="pay" modal :style="{ width: '65vw' }">
+        <h5 class="fw-bold mainColor text-center mb-2"> 
+            {{  $t('sub.payNow')  }}
+        </h5>
+
+        <iframe :src="payment_gate_link" frameborder="0" class="payment_gate"></iframe>
+    </Dialog>
     <Toast />
 </template>
 
@@ -67,7 +117,11 @@ export default {
             subscribtion : false,
             dataFetched : true,
             package_id : null,
-            disabled : false
+            disabled : false,
+            free : null,
+            pay_type : false,
+            payment_gate_link : '',
+            pay : false
         }
     },
     components:{
@@ -81,37 +135,69 @@ export default {
     },
     methods:{
         async addSubscription(){
-            this.disabled = true ;
-            const fd = new FormData();
-            fd.append('package_id', this.package_id);
+            if( this.free == true ){
+                this.disabled = true ;
+                const fd = new FormData();
+                fd.append('package_id', this.package_id);
 
+                const token = localStorage.getItem('token');
+                const headers = {
+                    Authorization: `Bearer ${token}`,
+                };
+
+                await axios.post('company/subscription/add', fd , {headers})
+                .then( (res)=>{
+                    if( res.data.key === 'success' ){
+                        this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                        this.disabled = false ;
+                        setTimeout(() => {
+                            this.$router.push('/dashboard');
+                        }, 1000);
+                    }else{
+                        this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
+                        this.disabled = false ;
+                    }
+                } )
+                .catch( (err)=> {
+                    this.$toast.add({ severity: 'error', summary: err, life: 3000 });
+                    this.disabled = false ;
+                } )
+            }else{
+                this.pay_type = true ;
+            }
+            
+        },
+        setPkg(id, type){
+            // console.log(id , type)
+            this.package_id = id ;
+            this.free = type
+        },
+        async updateSub(){
+            this.disabled = true ;
             const token = localStorage.getItem('token');
             const headers = {
-                Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${token}`,
             };
-
-            await axios.post('company/subscription/add', fd , {headers})
+            const fd = new FormData();
+            fd.append('card_type', this.payment_type);
+            fd.append('package_id', this.package_id);
+            await axios.post('company/package/payment', fd,{headers})
             .then( (res)=>{
                 if( res.data.key === 'success' ){
-                    this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
+                    // this.$toast.add({ severity: 'success', summary: res.data.msg, life: 3000 });
                     this.disabled = false ;
+                    this.pay_type = false ;
                     setTimeout(() => {
-                        this.$router.push('/dashboard');
+                        this.pay = true ;
                     }, 1000);
+                    this.payment_gate_link = res.data.data.checkoutUrl ;
                 }else{
                     this.$toast.add({ severity: 'error', summary: res.data.msg, life: 3000 });
                     this.disabled = false ;
                 }
             } )
-            .catch( (err)=> {
-                this.$toast.add({ severity: 'error', summary: err, life: 3000 });
-                this.disabled = false ;
-            } )
+            
         },
-        setPkg(id){
-            console.log(id)
-            this.package_id = id ;
-        }
     },  
     watch:{
         showPackageModal(){
