@@ -47,7 +47,7 @@
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
               <label for=""> المجال الوظيفي </label>
-              <Dropdown v-model="selectedEmp" ref="empRef"    :options="mergedOptions" filter optionLabel="title" :placeholder="$t('job.chooseEmp')" class="search_input w-full md:w-14rem">
+              <Dropdown v-model="selectedEmp" ref="empRef" @change="getQualificationsByEmployments"    :options="mergedOptions" filter optionLabel="title" :placeholder="$t('job.chooseEmp')" class="search_input w-full md:w-14rem">
                 <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
                         <div>{{ slotProps.value.title }}</div>
@@ -78,7 +78,7 @@
               <label for=""> {{ $t('job.name')  }} </label>
               
 
-              <Dropdown v-model="selectedSpec"  :options="specs" filter optionLabel="title" :placeholder="$t('job.chooseName')" class="search_input w-full md:w-14rem">
+              <Dropdown v-model="selectedSpec" @change="getQualificationsBySpecializations"  :options="specs" filter optionLabel="title" :placeholder="$t('job.chooseName')" class="search_input w-full md:w-14rem">
                 <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
                         <div>{{ slotProps.value.title }}</div>
@@ -936,7 +936,20 @@ export default {
 
         resetAd(){
           this.getAdDetails()
-        }
+        },
+
+        // get qualifications by employments 
+        async getQualificationsByEmployments(){
+            // this.updayeQualificationFromEmps(this.selectedEmp.id);
+            this.$store.dispatch('updayeQualificationFromEmps', this.selectedEmp.id);
+        },
+
+        // get qualifications by specializations 
+        async getQualificationsBySpecializations(){
+            // this.updayeQualificationFromSpecs(this.selectedSpec.id);
+            this.$store.dispatch('updayeQualificationFromSpecs', this.selectedSpec.id);
+
+        },
         
   },
   computed:{

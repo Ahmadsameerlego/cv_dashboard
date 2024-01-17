@@ -62,6 +62,9 @@ export default createStore({
     users : state => state.users 
   },
   mutations: {
+    UPDATE_QUAL(state , updatedQualification){
+        state.qualifications = updatedQualification ;
+    },
     // set chat rooms 
     setChatRooms(state, rooms){
       state.rooms = rooms ;
@@ -198,6 +201,23 @@ export default createStore({
     }
   },
   actions: {
+    // update qualifications by emps 
+    updayeQualificationFromEmps( { commit } ,empId){
+      return axios.get(`user/employment/${empId}/qualifications`)
+      .then( (res)=>{
+          const response = res.data.data ;
+          commit('UPDATE_QUAL', response);
+      } )
+    },
+    // update qualifications by specs 
+    updayeQualificationFromSpecs( { commit } ,specID){
+      return axios.get(`user/specialization/${specID}/qualifications`)
+      .then( (res)=>{
+          const response = res.data.data ;
+          commit('UPDATE_QUAL', response);
+      } )
+    },
+
     // get chat rooms rooms 
     getchatRooms( {commit} ){
       const token = localStorage.getItem('token');  
