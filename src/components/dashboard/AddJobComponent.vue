@@ -46,8 +46,32 @@
           <div class="col-md-6 mb-3">
             <div class="form-group position-relative">
               <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
+              <label for=""> {{  $t('search.qual')  }} </label>
+
+              <Dropdown v-model="selectedQual" @change="getSpecAndEmp"  :options="quals" filter optionLabel="title" :placeholder="$t('job.chooseQual')" class="search_input w-full md:w-14rem">
+                <template #value="slotProps">
+                    <div v-if="slotProps.value" class="flex align-items-center">
+                        <div>{{ slotProps.value.title }}</div>
+                    </div>
+                    <span v-else>
+                        {{ slotProps.placeholder }}
+                    </span>
+                </template>
+                <template #option="slotProps">
+                    <div class="flex align-items-center">
+                        <div>{{ slotProps.option.title }}</div>
+                    </div>
+                </template>
+              </Dropdown>
+
+            </div>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <div class="form-group position-relative">
+              <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
               <label for=""> المجال الوظيفي </label>
-              <Dropdown v-model="selectedEmp" ref="empRef" @change="getQualificationsByEmployments"    :options="mergedOptions" filter optionLabel="title" :placeholder="$t('job.chooseEmp')" class="search_input w-full md:w-14rem">
+              <Dropdown v-model="selectedEmp" ref="empRef"     :options="mergedOptions" filter optionLabel="title" :placeholder="$t('job.chooseEmp')" class="search_input w-full md:w-14rem">
                 <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
                         <div>{{ slotProps.value.title }}</div>
@@ -78,7 +102,7 @@
               <label for=""> {{ $t('job.name')  }} </label>
               
 
-              <Dropdown v-model="selectedSpec" @change="getQualificationsBySpecializations"  :options="specs" filter optionLabel="title" :placeholder="$t('job.chooseName')" class="search_input w-full md:w-14rem">
+              <Dropdown v-model="selectedSpec"   :options="specs" filter optionLabel="title" :placeholder="$t('job.chooseName')" class="search_input w-full md:w-14rem">
                 <template #value="slotProps">
                     <div v-if="slotProps.value" class="flex align-items-center">
                         <div>{{ slotProps.value.title }}</div>
@@ -141,30 +165,6 @@
                 </template>
               </Dropdown>
 
-
-            </div>
-          </div>
-
-          <div class="col-md-6 mb-3">
-            <div class="form-group position-relative">
-              <img class="form_icon" :src="require('@/assets/imgs/book.svg')" alt="">
-              <label for=""> {{  $t('search.qual')  }} </label>
-
-              <Dropdown v-model="selectedQual"  :options="quals" filter optionLabel="title" :placeholder="$t('job.chooseQual')" class="search_input w-full md:w-14rem">
-                <template #value="slotProps">
-                    <div v-if="slotProps.value" class="flex align-items-center">
-                        <div>{{ slotProps.value.title }}</div>
-                    </div>
-                    <span v-else>
-                        {{ slotProps.placeholder }}
-                    </span>
-                </template>
-                <template #option="slotProps">
-                    <div class="flex align-items-center">
-                        <div>{{ slotProps.option.title }}</div>
-                    </div>
-                </template>
-              </Dropdown>
 
             </div>
           </div>
@@ -950,6 +950,11 @@ export default {
             this.$store.dispatch('updayeQualificationFromSpecs', this.selectedSpec.id);
 
         },
+
+        // get specializations and employments by qualification id 
+        async getSpecAndEmp(){
+          this.$store.dispatch('updateSpecAndEmpByQual', this.selectedQual.id)
+        }
         
   },
   computed:{

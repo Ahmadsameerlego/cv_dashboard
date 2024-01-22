@@ -65,6 +65,12 @@ export default createStore({
     UPDATE_QUAL(state , updatedQualification){
         state.qualifications = updatedQualification ;
     },
+    UPDATE_SPEC( state , specs ){
+      state.specializations = specs ;
+    },
+    UPDATE_EMPLOYMENTS( state , emps ){
+      state.employments = emps ;
+    },
     // set chat rooms 
     setChatRooms(state, rooms){
       state.rooms = rooms ;
@@ -207,7 +213,10 @@ export default createStore({
       .then( (res)=>{
           const response = res.data.data ;
           commit('UPDATE_QUAL', response);
+
+           
       } )
+      
     },
     // update qualifications by specs 
     updayeQualificationFromSpecs( { commit } ,specID){
@@ -215,6 +224,21 @@ export default createStore({
       .then( (res)=>{
           const response = res.data.data ;
           commit('UPDATE_QUAL', response);
+      } )
+    },
+
+    updateSpecAndEmpByQual({ commit }, qualId){
+      return axios.get(`user/qualification/${qualId}/specializations`)
+      .then( (res)=>{
+          const response = res.data.data ;
+          commit('UPDATE_SPEC', response);
+
+          // call employments 
+          return axios.get(`user/qualification/${qualId}/employments`)
+          .then( (res)=>{
+            const emp_reponse = res.data.data ;
+            commit('UPDATE_EMPLOYMENTS', emp_reponse)
+          } )
       } )
     },
 
